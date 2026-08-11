@@ -74,7 +74,8 @@ if (!function_exists('kh_render_categories_section')) {
                         <i class="fa-solid fa-train"></i>
                     </div>
                     <span class="text-xs sm:text-sm font-extrabold text-slate-800">قطار</span>
-                </                <!-- Item 2: Flight -->
+                </a>
+                <!-- Item 2: Flight -->
                 <a href="#flight" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
                         <i class="fa-solid fa-plane-departure"></i>

@@ -31,8 +31,10 @@ function kish_harmony_scripts() {
     // FontAwesome 6.5.1
     wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
 
-    // Vazirmatn Persian Google Font
-    wp_enqueue_style('vazirmatn-font', 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap', array(), '33.003');
+    // Vazirmatn Persian Google Font (Only load from external Google API if our local-fonts plugin is inactive)
+    if (!class_exists('\KishHarmonyDesigner\Frontend')) {
+        wp_enqueue_style('vazirmatn-font', 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap', array(), '33.003');
+    }
 
     // Main Theme Compiled Style
     wp_enqueue_style('kish-harmony-style', get_stylesheet_uri(), array(), '1.0.0');

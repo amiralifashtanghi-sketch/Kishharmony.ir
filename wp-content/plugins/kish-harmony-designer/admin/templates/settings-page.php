@@ -341,13 +341,19 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
         </div>
 
         <!-- Live Preview Sticky Frame Column -->
-        <div class="khd-preview-column">
-            <div class="khd-preview-header">
+        <div class="khd-preview-column" style="display:flex; flex-direction:column; align-items:center;">
+            <div class="khd-preview-header" style="width:100%; display:flex; justify-content: space-between; align-items: center; background: #e2e8f0; padding: 12px; border-bottom: 1px solid #cbd5e1;">
                 <span class="khd-preview-title">👁️ پیش‌نمایش زنده و پیکسلی فرانت‌اند</span>
-                <span style="font-size:11px; background:#fff; padding:2px 8px; border-radius:10px; color:#64748b; font-weight:bold;">ریسپانسیو</span>
+                <div class="khd-device-switcher" style="display:flex; gap:6px; align-items:center;">
+                    <button id="khd-picker-toggle-btn" title="انتخاب‌گر زنده المان" style="background:#fff; color:#0f172a; border:1px solid #cbd5e1; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold; margin-left:15px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-crosshairs text-red-500 animate-pulse"></i> <span>انتخاب‌گر زنده</span></button>
+
+                    <button class="khd-device-btn active" data-device="desktop" title="دسکتاپ" style="background:#0b63d8; color:#fff; border:1px solid #cbd5e1; padding:6px 12px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-desktop"></i> دسکتاپ</button>
+                    <button class="khd-device-btn" data-device="tablet" title="تبلت" style="background:#fff; color:#000; border:1px solid #cbd5e1; padding:6px 12px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-tablet-screen-button"></i> تبلت</button>
+                    <button class="khd-device-btn" data-device="mobile" title="موبایل" style="background:#fff; color:#000; border:1px solid #cbd5e1; padding:6px 12px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-mobile-screen-button"></i> موبایل</button>
+                </div>
             </div>
             <!-- Live iframe connected to front page -->
-            <iframe id="khd-live-preview-iframe" class="khd-preview-iframe" src="<?php echo esc_url(add_query_arg('khd_preview', '1', home_url('/'))); ?>"></iframe>
+            <iframe id="khd-live-preview-iframe" class="khd-preview-iframe" style="width:100%; height:100%; border:none; transition: width 0.3s ease;" src="<?php echo esc_url(add_query_arg('khd_preview', '1', home_url('/'))); ?>"></iframe>
         </div>
     </div>
 </div>

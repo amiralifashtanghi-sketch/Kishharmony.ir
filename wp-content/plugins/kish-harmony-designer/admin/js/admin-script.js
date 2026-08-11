@@ -11,6 +11,109 @@ jQuery(document).ready(function($) {
         $('#tab-' + targetTab).addClass('active');
     });
 
+    // Picker Toggle Button
+    var isPickerActive = false;
+    $('#khd-picker-toggle-btn').on('click', function(e) {
+        e.preventDefault();
+        isPickerActive = !isPickerActive;
+
+        if (isPickerActive) {
+            $(this).css('background', '#ef4444').css('color', '#fff');
+            $(this).find('span').text('در حال انتخاب...');
+        } else {
+            $(this).css('background', '#fff').css('color', '#0f172a');
+            $(this).find('span').text('انتخاب‌گر زنده');
+        }
+
+        var previewFrame = document.getElementById('khd-live-preview-iframe');
+        if (previewFrame && previewFrame.contentWindow) {
+            previewFrame.contentWindow.postMessage({
+                action: 'khd_toggle_picker',
+                active: isPickerActive
+            }, '*');
+        }
+    });
+
+    // Listen for element picker selection events sent FROM the preview iframe
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.action === 'khd_element_selected') {
+            var selector = event.data.selector;
+            var styles = event.data.styles || {};
+
+            // Add new custom selector row automatically in the elements tab
+            addCustomSelectorRow(selector, styles);
+
+            // Switch to Elements tab so the user sees the new styling controls
+            $('.khd-tab-btn[data-tab="elements"]').click();
+
+            // Deactivate picker visually
+            isPickerActive = false;
+            $('#khd-picker-toggle-btn').css('background', '#fff').css('color', '#0f172a');
+            $('#khd-picker-toggle-btn').find('span').text('انتخاب‌گر زنده');
+        }
+    });
+
+    function addCustomSelectorRow(selector, styles) {
+        var rowHtml = `
+        <div class="khd-custom-sel-row" style="background:#f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+            <div style="display:flex; gap:10px; margin-bottom: 8px;">
+                <input type="text" class="khd-sel-input" value="${selector}" placeholder="سلکتور CSS مانند .btn-custom یا #my-box" style="flex:2;">
+                <button class="button khd-remove-sel-btn" style="background:#ef4444; color:#fff; border:none; padding:5px 12px; border-radius:4px; cursor:pointer;">حذف</button>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">رنگ متن</label>
+                    <input type="color" class="khd-sel-color" value="${styles.color || '#000000'}" style="width:100%; height:30px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">رنگ پس‌زمینه</label>
+                    <input type="color" class="khd-sel-bg" value="${styles.bg_color || '#ffffff'}" style="width:100%; height:30px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">سایز فونت</label>
+                    <input type="text" class="khd-sel-size" value="${styles.font_size || ''}" placeholder="16px">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">فاصله داخلی (Padding)</label>
+                    <input type="text" class="khd-sel-padding" value="${styles.padding || ''}" placeholder="10px">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">فاصله خارجی (Margin)</label>
+                    <input type="text" class="khd-sel-margin" value="${styles.margin || ''}" placeholder="0 0 10px 0">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">گردی گوشه‌ها</label>
+                    <input type="text" class="khd-sel-radius" value="${styles.border_radius || ''}" placeholder="12px">
+                </div>
+            </div>
+        </div>
+        `;
+        $('#khd-custom-selectors-container').append(rowHtml);
+        triggerLivePreviewUpdate();
+    }
+
+    // Live Preview Device Switcher Click Handler
+    $('.khd-device-btn').on('click', function(e) {
+        e.preventDefault();
+        $('.khd-device-btn').css('background', '#fff').css('color', '#000').removeClass('active');
+        $(this).css('background', '#0b63d8').css('color', '#fff').addClass('active');
+
+        var device = $(this).data('device');
+        var iframe = $('#khd-live-preview-iframe');
+
+        if (device === 'desktop') {
+            iframe.css('width', '100%');
+        } else if (device === 'tablet') {
+            var val = $('#khd-tablet-breakpoint').val() || '1024px';
+            if (!isNaN(val) && val.indexOf('px') === -1) val += 'px';
+            iframe.css('width', val);
+        } else if (device === 'mobile') {
+            var val = $('#khd-mobile-breakpoint').val() || '640px';
+            if (!isNaN(val) && val.indexOf('px') === -1) val += 'px';
+            iframe.css('width', val);
+        }
+    });
+
     // Make sections sortable (drag & drop layout builder)
     $('.khd-sortable-list').sortable({
         handle: '.khd-sortable-handle',
