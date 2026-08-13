@@ -68,6 +68,45 @@ class Helpers {
                 'show_rating'        => true,
                 'show_price'         => true,
             ),
+            'header' => array(
+                'menu_id'              => '0',
+                'bg_left'              => '#ffffff',
+                'bg_center'            => '#ffffff',
+                'bg_right'             => '#ffffff',
+                'border_color'         => '#cbd5e1',
+                'border_radius'        => '12px',
+                'hamburger_on_desktop' => false,
+                'animation_speed'      => '300ms',
+                'custom_logo'          => '',
+            ),
+            'hero_banner' => array(
+                'bg_color'               => '#0B63D8',
+                'show_title'             => true,
+                'show_desc'              => true,
+                'title_text'             => 'سامانه آنلاین رزرو کیش هارمونی',
+                'desc_text'              => 'رزرو مستقیم تفریحات آبی، اجاره ماشین‌های سوپراسپرت و اقامتگاه‌های لوکس با تخفیف روزانه و پشتیبانی ۲۴ ساعته در کیش',
+                'title_color'            => '#ffffff',
+                'desc_color'             => '#dbeafe',
+                'title_size_desktop'     => '40px',
+                'title_size_mobile'      => '24px',
+                'desc_size_desktop'      => '16px',
+                'desc_size_mobile'       => '12px',
+                'lang_switcher_position' => 'right-top',
+                'lang_switcher_text'     => 'فارسی | IRAN',
+            ),
+            'categories_settings' => array(
+                'position_mode' => 'absolute',
+            ),
+            'category_items' => array(
+                array('id' => 'train', 'label' => 'قطار', 'type' => 'icon', 'icon_val' => 'fa-train', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#train', 'popup_html' => ''),
+                array('id' => 'flight', 'label' => 'پرواز', 'type' => 'icon', 'icon_val' => 'fa-plane-departure', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#flight', 'popup_html' => ''),
+                array('id' => 'hotel', 'label' => 'هتل', 'type' => 'icon', 'icon_val' => 'fa-hotel', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#hotel', 'popup_html' => ''),
+                array('id' => 'bus', 'label' => 'اتوبوس', 'type' => 'icon', 'icon_val' => 'fa-bus', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#bus', 'popup_html' => ''),
+                array('id' => 'special', 'label' => 'ویژه', 'type' => 'icon', 'icon_val' => 'fa-star', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#special-offers', 'popup_html' => ''),
+                array('id' => 'villa', 'label' => 'ویلا', 'type' => 'icon', 'icon_val' => 'fa-house-chimney', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#villa', 'popup_html' => ''),
+                array('id' => 'tour', 'label' => 'تور', 'type' => 'icon', 'icon_val' => 'fa-suitcase-rolling', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#tour', 'popup_html' => ''),
+                array('id' => 'new', 'label' => 'نسخه جدید', 'type' => 'icon', 'icon_val' => 'fa-wand-magic-sparkles', 'image_url' => '', 'emoji_val' => '', 'behavior' => 'redirect', 'target_url' => '#new', 'popup_html' => ''),
+            ),
             'custom_css' => '',
             'custom_html_1_code' => '<div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm text-center"><h3>محتوای سفارشی ۱</h3><p>شما می‌توانید این بخش را به دلخواه خود در پنل مدیریت استایل‌دهی و محتواگذاری کنید.</p></div>',
             'custom_html_2_code' => '<div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm text-center"><h3>محتوای سفارشی ۲</h3><p>شما می‌توانید این بخش را به دلخواه خود در پنل مدیریت استایل‌دهی و محتواگذاری کنید.</p></div>',
@@ -92,6 +131,11 @@ class Helpers {
             return $default;
         }
         foreach ($saved as $key => $val) {
+            // Bypass deep-merging for sequential lists / repeater values
+            if (in_array($key, array('sections', 'custom_selectors', 'category_items'), true)) {
+                $default[$key] = $val;
+                continue;
+            }
             if (isset($default[$key]) && is_array($val) && is_array($default[$key])) {
                 $default[$key] = self::deep_merge_arrays($default[$key], $val);
             } else {

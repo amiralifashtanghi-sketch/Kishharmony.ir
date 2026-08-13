@@ -165,6 +165,66 @@ class Admin {
             );
         }
 
+        // 5a. Header Settings
+        if (isset($decoded['header'])) {
+            $sanitized_settings['header'] = array(
+                'menu_id'              => sanitize_text_field($decoded['header']['menu_id'] ?? '0'),
+                'bg_left'              => sanitize_hex_color($decoded['header']['bg_left'] ?? '#ffffff'),
+                'bg_center'            => sanitize_hex_color($decoded['header']['bg_center'] ?? '#ffffff'),
+                'bg_right'             => sanitize_hex_color($decoded['header']['bg_right'] ?? '#ffffff'),
+                'border_color'         => sanitize_hex_color($decoded['header']['border_color'] ?? '#cbd5e1'),
+                'border_radius'        => sanitize_text_field($decoded['header']['border_radius'] ?? '12px'),
+                'hamburger_on_desktop' => isset($decoded['header']['hamburger_on_desktop']) ? (bool)$decoded['header']['hamburger_on_desktop'] : false,
+                'animation_speed'      => sanitize_text_field($decoded['header']['animation_speed'] ?? '300ms'),
+                'custom_logo'          => esc_url_raw($decoded['header']['custom_logo'] ?? ''),
+            );
+        }
+
+        // 5b. Hero Banner Settings
+        if (isset($decoded['hero_banner'])) {
+            $sanitized_settings['hero_banner'] = array(
+                'bg_color'               => sanitize_hex_color($decoded['hero_banner']['bg_color'] ?? '#0B63D8'),
+                'show_title'             => isset($decoded['hero_banner']['show_title']) ? (bool)$decoded['hero_banner']['show_title'] : true,
+                'show_desc'              => isset($decoded['hero_banner']['show_desc']) ? (bool)$decoded['hero_banner']['show_desc'] : true,
+                'title_text'             => sanitize_text_field($decoded['hero_banner']['title_text'] ?? ''),
+                'desc_text'              => sanitize_text_field($decoded['hero_banner']['desc_text'] ?? ''),
+                'title_color'            => sanitize_hex_color($decoded['hero_banner']['title_color'] ?? '#ffffff'),
+                'desc_color'             => sanitize_hex_color($decoded['hero_banner']['desc_color'] ?? '#dbeafe'),
+                'title_size_desktop'     => sanitize_text_field($decoded['hero_banner']['title_size_desktop'] ?? '40px'),
+                'title_size_mobile'      => sanitize_text_field($decoded['hero_banner']['title_size_mobile'] ?? '24px'),
+                'desc_size_desktop'      => sanitize_text_field($decoded['hero_banner']['desc_size_desktop'] ?? '16px'),
+                'desc_size_mobile'       => sanitize_text_field($decoded['hero_banner']['desc_size_mobile'] ?? '12px'),
+                'lang_switcher_position' => sanitize_text_field($decoded['hero_banner']['lang_switcher_position'] ?? 'right-top'),
+                'lang_switcher_text'     => sanitize_text_field($decoded['hero_banner']['lang_switcher_text'] ?? 'فارسی | IRAN'),
+            );
+        }
+
+        // 5c. Categories Settings & Items (Repeater)
+        if (isset($decoded['categories_settings'])) {
+            $sanitized_settings['categories_settings'] = array(
+                'position_mode' => sanitize_text_field($decoded['categories_settings']['position_mode'] ?? 'absolute'),
+            );
+        }
+
+        if (isset($decoded['category_items'])) {
+            $sanitized_settings['category_items'] = array();
+            foreach ($decoded['category_items'] as $item) {
+                if (isset($item['id'])) {
+                    $sanitized_settings['category_items'][] = array(
+                        'id'         => sanitize_key($item['id']),
+                        'label'      => sanitize_text_field($item['label'] ?? ''),
+                        'type'       => sanitize_text_field($item['type'] ?? 'icon'),
+                        'icon_val'   => sanitize_text_field($item['icon_val'] ?? ''),
+                        'image_url'  => esc_url_raw($item['image_url'] ?? ''),
+                        'emoji_val'  => sanitize_text_field($item['emoji_val'] ?? ''),
+                        'behavior'   => sanitize_text_field($item['behavior'] ?? 'redirect'),
+                        'target_url' => sanitize_text_field($item['target_url'] ?? ''),
+                        'popup_html' => Helpers::sanitize_html($item['popup_html'] ?? ''),
+                    );
+                }
+            }
+        }
+
         // 6. Custom CSS & HTML Block content
         $sanitized_settings['custom_css'] = Helpers::sanitize_css($decoded['custom_css'] ?? '');
         $sanitized_settings['custom_html_1_code'] = Helpers::sanitize_html($decoded['custom_html_1_code'] ?? '');

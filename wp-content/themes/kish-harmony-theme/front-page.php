@@ -13,6 +13,10 @@ $sections = isset($settings['sections']) ? $settings['sections'] : array(
     array('id' => 'weather', 'active' => true),
 );
 
+$hero_banner = $settings['hero_banner'] ?? array();
+$categories_settings = $settings['categories_settings'] ?? array();
+$category_items = $settings['category_items'] ?? array();
+
 // Determine if Category cards overlap the Hero banner (default state)
 $categories_active = false;
 foreach ($sections as $sec) {
@@ -21,34 +25,58 @@ foreach ($sections as $sec) {
         break;
     }
 }
-$hero_margin_class = $categories_active ? 'mb-44 sm:mb-52 md:mb-60' : 'mb-8';
+
+$position_mode = $categories_settings['position_mode'] ?? 'absolute';
+$hero_margin_class = ($categories_active && $position_mode === 'absolute') ? 'mb-44 sm:mb-52 md:mb-60' : 'mb-8';
 
 // Function mapping to render sections dynamically
 if (!function_exists('kh_render_hero_section')) {
-    function kh_render_hero_section($settings, $hero_margin_class) {
+    function kh_render_hero_section($settings, $hero_margin_class, $hero_banner) {
+        $bg_color = $hero_banner['bg_color'] ?? '#0B63D8';
+        $lang_pos = $hero_banner['lang_switcher_position'] ?? 'right-top';
+        $lang_text = $hero_banner['lang_switcher_text'] ?? 'فارسی | IRAN';
+        $show_title = isset($hero_banner['show_title']) ? (bool)$hero_banner['show_title'] : true;
+        $show_desc = isset($hero_banner['show_desc']) ? (bool)$hero_banner['show_desc'] : true;
+        $title_text = $hero_banner['title_text'] ?? 'سامانه آنلاین رزرو کیش هارمونی';
+        $desc_text = $hero_banner['desc_text'] ?? 'رزرو مستقیم تفریحات آبی، اجاره ماشین‌های سوپراسپرت و اقامتگاه‌های لوکس با تخفیف روزانه و پشتیبانی ۲۴ ساعته در کیش';
+
+        $title_color = $hero_banner['title_color'] ?? '#ffffff';
+        $desc_color = $hero_banner['desc_color'] ?? '#dbeafe';
         ?>
         <!-- 1. Hero Section -->
-        <section class="hero bg-[#0B63D8] w-full pt-6 relative overflow-visible shadow-xl <?php echo esc_attr($hero_margin_class); ?>">
-            <!-- Top Right Language Switcher Badge -->
-            <div class="absolute top-4 right-4 sm:right-8 z-20 flex items-center gap-2">
-                <span class="text-white text-xs font-bold bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/30 flex items-center gap-2 shadow-sm cursor-pointer">
-                    <i class="fa-solid fa-globe text-amber-300"></i>
-                    <span>فارسی | IRAN</span>
-                    <i class="fa-solid fa-chevron-down text-[10px] text-white/80"></i>
-                </span>
+        <section class="hero w-full pt-6 relative overflow-visible shadow-xl <?php echo esc_attr($hero_margin_class); ?>" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+
+            <?php if ($lang_pos !== 'none') : ?>
+                <!-- Language Switcher Badge -->
+                <div class="absolute top-4 z-20 flex items-center gap-2 <?php echo $lang_pos === 'left-top' ? 'left-4 sm:left-8' : 'right-4 sm:right-8'; ?>">
+                    <span class="text-white text-xs font-bold bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/30 flex items-center gap-2 shadow-sm cursor-pointer">
+                        <i class="fa-solid fa-globe text-amber-300"></i>
+                        <span><?php echo esc_html($lang_text); ?></span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-white/80"></i>
+                    </span>
+                </div>
+            <?php endif; ?>
+
+            <!-- Main Banner Spacer Container (Empty to allow centered floating logo transitions without overlapping text) -->
+            <div class="banner min-h-[140px] sm:min-h-[160px] md:min-h-[190px] flex flex-col items-center justify-center relative px-6 text-center text-white mt-6 sm:mt-8 md:mt-10 mb-6">
+                <!-- Kept empty as a spacer for absolute floating-logo scroll mapping -->
             </div>
 
-            <!-- Main Banner Content -->
-            <div class="banner min-h-[140px] sm:min-h-[160px] md:min-h-[190px] flex flex-col items-center justify-center relative px-6 text-center text-white mt-6 sm:mt-8 md:mt-10 mb-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-[#18D6D8] text-2xl sm:text-3xl border border-white/20 shadow-inner">
-                        <i class="fa-solid fa-umbrella-beach"></i>
-                    </div>
-                    <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight drop-shadow-md">سامانه آنلاین رزرو کیش هارمونی</h1>
+            <!-- Hero Text Elements (Title & Description) rendered underneath cleanly to prevent brand logo collision -->
+            <div class="hero-text-container relative z-10 px-6 text-center text-white pb-8">
+                <div class="flex items-center justify-center gap-3">
+                    <?php if ($show_title) : ?>
+                        <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight drop-shadow-md khd-banner-title" style="color: <?php echo esc_attr($title_color); ?>; font-size: <?php echo esc_attr($hero_banner['title_size_desktop'] ?? '40px'); ?>;">
+                            <?php echo esc_html($title_text); ?>
+                        </h1>
+                    <?php endif; ?>
                 </div>
-                <p class="text-xs sm:text-sm md:text-base text-blue-100 font-medium mt-3 max-w-2xl leading-relaxed">
-                    رزرو مستقیم تفریحات آبی، اجاره ماشین‌های سوپراسپرت و اقامتگاه‌های لوکس با تخفیف روزانه و پشتیبانی ۲۴ ساعته در کیش
-                </p>
+
+                <?php if ($show_desc) : ?>
+                    <p class="text-xs sm:text-sm md:text-base font-medium mt-3 max-w-2xl mx-auto leading-relaxed khd-banner-desc" style="color: <?php echo esc_attr($desc_color); ?>; font-size: <?php echo esc_attr($hero_banner['desc_size_desktop'] ?? '16px'); ?>;">
+                        <?php echo esc_html($desc_text); ?>
+                    </p>
+                <?php endif; ?>
             </div>
 
             <!-- Bottom Curve SVG -->
@@ -63,74 +91,28 @@ if (!function_exists('kh_render_hero_section')) {
 }
 
 if (!function_exists('kh_render_categories_section')) {
-    function kh_render_categories_section() {
+    function kh_render_categories_section($category_items, $position_mode) {
+        $wrapper_class = ($position_mode === 'absolute') ? 'max-w-6xl mx-auto px-4 absolute -bottom-36 sm:-bottom-44 md:-bottom-52 left-0 right-0 z-20 kh_categories_block' : 'max-w-6xl mx-auto px-4 relative z-20 kh_categories_block';
         ?>
-        <!-- 8 Overlapping Floating Category Cards Grid -->
-        <div class="max-w-6xl mx-auto px-4 absolute -bottom-36 sm:-bottom-44 md:-bottom-52 left-0 right-0 z-20 kh_categories_block">
-            <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 sm:p-6 grid grid-cols-4 sm:grid-cols-8 gap-2 sm:gap-4 text-center">
-                <!-- Item 1: Train -->
-                <a href="#train" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-train"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-800">قطار</span>
-                </a>
-                <!-- Item 2: Flight -->
-                <a href="#flight" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-plane-departure"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-800">پرواز</span>
-                </a>
-
-                <!-- Item 3: Hotel -->
-                <a href="#hotel" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-hotel"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-800">هتل</span>
-                </a>
-
-                <!-- Item 4: Bus -->
-                <a href="#bus" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-bus"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-800">اتوبوس</span>
-                </a>
-
-                <!-- Item 5: Special Offer (Star) -->
-                <a href="#special-offers" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-amber-50/90 hover:bg-amber-100 transition-all border border-amber-200 shadow-sm hover:shadow-md relative">
-                    <span class="absolute -top-2 bg-[#FF8A00] text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md animate-bounce">جدید</span>
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-100 text-[#FF8A00] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-[#FF8A00]">ویژه</span>
-                </a>
-
-                <!-- Item 6: Villa -->
-                <a href="#villa" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-house-chimney"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-800">ویلا</span>
-                </a>
-
-                <!-- Item 7: Tour -->
-                <a href="#tour" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-suitcase-rolling"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-800">تور</span>
-                </a>
-
-                <!-- Item 8: New Version -->
-                <a href="#new" class="category-card group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-cyan-50/60 hover:bg-cyan-100 transition-all border border-cyan-200 shadow-sm hover:shadow-md">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-cyan-100 text-[#18D6D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-[#0B63D8]">نسخه جدید</span>
-                </a>
+        <div class="<?php echo esc_attr($wrapper_class); ?>">
+            <div class="categories-grid bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 sm:p-6 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 sm:gap-4 text-center">
+                <?php foreach ($category_items as $item) :
+                    $href = ($item['behavior'] ?? 'redirect') === 'popup' ? 'javascript:void(0)' : esc_url($item['target_url'] ?? '#');
+                    $click_class = ($item['behavior'] ?? 'redirect') === 'popup' ? 'khd-trigger-popup-btn' : '';
+                    ?>
+                    <a href="<?php echo $href; ?>" class="category-item <?php echo esc_attr($click_class); ?> group flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 transition-all border border-slate-100 hover:border-blue-200 shadow-sm hover:shadow-md" data-id="<?php echo esc_attr($item['id']); ?>" data-label="<?php echo esc_attr($item['label']); ?>">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-[#0B63D8] flex items-center justify-center text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform">
+                            <?php if (($item['type'] ?? 'icon') === 'icon') : ?>
+                                <i class="fa-solid <?php echo esc_attr($item['icon_val'] ?? 'fa-circle-question'); ?>"></i>
+                            <?php elseif ($item['type'] === 'image') : ?>
+                                <img src="<?php echo esc_url($item['image_url']); ?>" alt="<?php echo esc_attr($item['label']); ?>" style="max-height:30px; object-fit:contain;">
+                            <?php else : ?>
+                                <span class="text-xl sm:text-2xl"><?php echo esc_html($item['emoji_val'] ?? '🌊'); ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <span class="category-text text-xs sm:text-sm font-extrabold text-slate-800"><?php echo esc_html($item['label']); ?></span>
+                    </a>
+                <?php endforeach; ?>
             </div>
         </div>
         <?php
@@ -408,7 +390,7 @@ if (!function_exists('kh_render_custom_block_2')) {
 $hero_rendered_separately = false;
 foreach ($sections as $section) {
     if ($section['id'] === 'hero' && !empty($section['active'])) {
-        kh_render_hero_section($settings, $hero_margin_class);
+        kh_render_hero_section($settings, $hero_margin_class, $hero_banner);
         $hero_rendered_separately = true;
         break;
     }
@@ -416,9 +398,9 @@ foreach ($sections as $section) {
 
 // Render categories separately or nested
 $categories_rendered_inside_hero = false;
-if ($hero_rendered_separately && $categories_active) {
+if ($hero_rendered_separately && $categories_active && $position_mode === 'absolute') {
     // Render the categories overlapping absolute block
-    kh_render_categories_section();
+    kh_render_categories_section($category_items, $position_mode);
     $categories_rendered_inside_hero = true;
 }
 ?>
@@ -436,15 +418,13 @@ if ($hero_rendered_separately && $categories_active) {
         switch ($section['id']) {
             case 'hero':
                 if (!$hero_rendered_separately) {
-                    kh_render_hero_section($settings, 'mb-8');
+                    kh_render_hero_section($settings, 'mb-8', $hero_banner);
                 }
                 break;
             case 'categories':
                 if (!$categories_rendered_inside_hero) {
                     // Render simple container category block without negative overlap
-                    echo '<div class="relative py-4">';
-                    kh_render_categories_section();
-                    echo '</div>';
+                    kh_render_categories_section($category_items, $position_mode);
                 }
                 break;
             case 'search':

@@ -9,14 +9,21 @@ $global   = $settings['global'];
 $typo     = $settings['typography'];
 $spacing  = $settings['spacing'];
 $woo      = $settings['woocommerce'];
+
+$hdr              = $settings['header'] ?? array();
+$hero_banner      = $settings['hero_banner'] ?? array();
+$categories_settings = $settings['categories_settings'] ?? array();
+$category_items   = $settings['category_items'] ?? array();
+
 $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
+$menus = wp_get_nav_menus();
 ?>
 <div class="khd-admin-container">
     <!-- Top Header Ribbon Panel -->
     <div class="khd-header-panel">
         <div>
-            <h1>کیش هارمونی | پنل تنظیمات پیشرفته طراحی</h1>
-            <p>ظاهر کل سایت، چیدمان سکشن‌ها، رنگ‌ها، تایپوگرافی پیکسلی و فواصل را از این بخش بدون نیاز به کدنویسی مدیریت کنید.</p>
+            <h1>کیش هارمونی | پنل تنظیمات پیشرفته طراحی نسخه پرو</h1>
+            <p>ظاهر کل سایت، چیدمان سکشن‌ها، هدر، بنر آبی، دسته‌بندی‌های ایجکس، رنگ‌ها، تایپوگرافی پیکسلی و فواصل را بدون نیاز به کدنویسی مدیریت کنید.</p>
         </div>
         <div>
             <button id="khd-save-settings-btn" class="khd-save-btn">ذخیره نهایی تنظیمات</button>
@@ -28,13 +35,16 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
         <!-- Controls Left Column -->
         <div class="khd-controls-column">
             <nav class="khd-tabs-nav">
-                <button class="khd-tab-btn active" data-tab="layout">سازنده چیدمان صفحه اصلی</button>
+                <button class="khd-tab-btn active" data-tab="layout">چیدمان سکشن‌ها</button>
+                <button class="khd-tab-btn" data-tab="header">تنظیمات هدر</button>
+                <button class="khd-tab-btn" data-tab="hero">بنر آبی (هیرو)</button>
+                <button class="khd-tab-btn" data-tab="categories">دسته‌بندی‌ها (ایمرسیو)</button>
                 <button class="khd-tab-btn" data-tab="global">تنظیمات سراسری</button>
                 <button class="khd-tab-btn" data-tab="typography">تایپوگرافی کامل</button>
                 <button class="khd-tab-btn" data-tab="spacing">فاصله‌ها (پدینگ و مارجین)</button>
                 <button class="khd-tab-btn" data-tab="woocommerce">ووکامرس</button>
-                <button class="khd-tab-btn" data-tab="elements">المان‌های دلخواه</button>
-                <button class="khd-tab-btn" data-tab="preset">پریست و ایمپورت/اکسپورت</button>
+                <button class="khd-tab-btn" data-tab="elements">المان‌های سفارشی</button>
+                <button class="khd-tab-btn" data-tab="preset">پریست و بکاپ</button>
             </nav>
 
             <div class="khd-tabs-content">
@@ -59,7 +69,238 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
                     </ul>
                 </div>
 
-                <!-- Tab 2: Global Configuration -->
+                <!-- Tab 2: Header Customization (New!) -->
+                <div class="khd-tab-content" id="tab-header">
+                    <h2>تنظیمات میکرومتری هدر سایت</h2>
+                    <p class="description">تنظیمات منوها، رنگ بخش‌ها، لوگو و انیمیشن‌های هدر را شخصی‌سازی کنید.</p>
+
+                    <div class="khd-field-row">
+                        <label>انتخاب فهرست فعال هدر (WordPress Nav Menu)</label>
+                        <select id="khd-header-menu">
+                            <option value="0" <?php selected($hdr['menu_id'] ?? '0', '0'); ?>>-- عدم انتخاب منو (استفاده از آیکون همبرگری سفارشی) --</option>
+                            <?php if (!empty($menus)) : foreach ($menus as $menu) : ?>
+                                <option value="<?php echo esc_attr($menu->term_id); ?>" <?php selected($hdr['menu_id'] ?? '0', $menu->term_id); ?>><?php echo esc_html($menu->name); ?></option>
+                            <?php endforeach; endif; ?>
+                        </select>
+                    </div>
+
+                    <div class="khd-field-row" style="flex-direction:row; gap:20px; margin-top:10px;">
+                        <label style="cursor:pointer;">
+                            <input type="checkbox" id="khd-header-hamburger-desktop" <?php checked($hdr['hamburger_on_desktop'] ?? false); ?>>
+                            نمایش منوی همبرگری در دسکتاپ (به همراه لوگو در وسط و المان‌ها در طرفین)
+                        </label>
+                    </div>
+
+                    <div class="khd-responsive-group">
+                        <div class="khd-responsive-group-title"><strong>رنگ پس‌زمینه ستون‌های هدر</strong></div>
+                        <div class="khd-field-row-row">
+                            <div class="khd-field-row">
+                                <label>پس‌زمینه بخش چپ</label>
+                                <input type="color" id="khd-header-bg-left" value="<?php echo esc_attr($hdr['bg_left'] ?? '#ffffff'); ?>">
+                            </div>
+                            <div class="khd-field-row">
+                                <label>پس‌زمینه بخش وسط</label>
+                                <input type="color" id="khd-header-bg-center" value="<?php echo esc_attr($hdr['bg_center'] ?? '#ffffff'); ?>">
+                            </div>
+                            <div class="khd-field-row">
+                                <label>پس‌زمینه بخش راست</label>
+                                <input type="color" id="khd-header-bg-right" value="<?php echo esc_attr($hdr['bg_right'] ?? '#ffffff'); ?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="khd-field-row-row">
+                        <div class="khd-field-row">
+                            <label>رنگ حاشیه (Border Color)</label>
+                            <input type="color" id="khd-header-border-color" value="<?php echo esc_attr($hdr['border_color'] ?? '#cbd5e1'); ?>">
+                        </div>
+                        <div class="khd-field-row">
+                            <label>گردی لبه‌های هدر (Border Radius)</label>
+                            <input type="text" id="khd-header-border-radius" value="<?php echo esc_attr($hdr['border_radius'] ?? '12px'); ?>" placeholder="12px">
+                        </div>
+                    </div>
+
+                    <div class="khd-field-row-row">
+                        <div class="khd-field-row">
+                            <label>سرعت انیمیشن/انتقال (در میلی‌ثانیه یا ثانیه)</label>
+                            <input type="text" id="khd-header-animation-speed" value="<?php echo esc_attr($hdr['animation_speed'] ?? '300ms'); ?>" placeholder="300ms">
+                        </div>
+                        <div class="khd-field-row">
+                            <label>لوگوی اختصاصی هدر (تصویر آپلود شده)</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="text" id="khd-header-custom-logo" value="<?php echo esc_attr($hdr['custom_logo'] ?? ''); ?>" style="flex:1;" placeholder="آدرس تصویر لوگو">
+                                <button class="button khd-media-upload-btn" data-target="khd-header-custom-logo">آپلود</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Blue Banner / Hero (New!) -->
+                <div class="khd-tab-content" id="tab-hero">
+                    <h2>تنظیمات بنر آبی و هیرو اصلی سایت</h2>
+                    <p class="description">رنگ بک‌گراند، لوگوی شناور، تغییردهنده زبان و متون روی بنر را با جزئیات کامل کنترل کنید.</p>
+
+                    <div class="khd-field-row-row">
+                        <div class="khd-field-row">
+                            <label>رنگ بک‌گراند بنر هیرو (Hero BG)</label>
+                            <input type="color" id="khd-hero-bg-color" value="<?php echo esc_attr($hero_banner['bg_color'] ?? '#0B63D8'); ?>">
+                        </div>
+                        <div class="khd-field-row">
+                            <label>جایگاه تغییر دهنده زبان</label>
+                            <select id="khd-hero-lang-pos">
+                                <option value="right-top" <?php selected($hero_banner['lang_switcher_position'] ?? 'right-top', 'right-top'); ?>>راست - بالا (پیش‌فرض)</option>
+                                <option value="left-top" <?php selected($hero_banner['lang_switcher_position'] ?? 'right-top', 'left-top'); ?>>چپ - بالا</option>
+                                <option value="none" <?php selected($hero_banner['lang_switcher_position'] ?? 'right-top', 'none'); ?>>غیرفعال و مخفی</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="khd-field-row">
+                        <label>متن دکمه زبان (اتصال به افزونه ترجمه یا متن دستی)</label>
+                        <input type="text" id="khd-hero-lang-text" value="<?php echo esc_attr($hero_banner['lang_switcher_text'] ?? 'فارسی | IRAN'); ?>" style="width:100%;">
+                    </div>
+
+                    <div class="khd-responsive-group">
+                        <div class="khd-responsive-group-title"><strong>تنظیمات عنوان بنر اصلی</strong></div>
+                        <div class="khd-field-row" style="flex-direction:row; gap:10px; margin-bottom: 10px;">
+                            <label><input type="checkbox" id="khd-hero-show-title" <?php checked($hero_banner['show_title'] ?? true); ?>> نمایش عنوان اصلی</label>
+                        </div>
+                        <div class="khd-field-row">
+                            <label>متن عنوان اصلی</label>
+                            <input type="text" id="khd-hero-title-text" value="<?php echo esc_attr($hero_banner['title_text'] ?? ''); ?>" style="width:100%;">
+                        </div>
+                        <div class="khd-field-row-row" style="margin-top:10px;">
+                            <div class="khd-field-row">
+                                <label>رنگ عنوان</label>
+                                <input type="color" id="khd-hero-title-color" value="<?php echo esc_attr($hero_banner['title_color'] ?? '#ffffff'); ?>">
+                            </div>
+                            <div class="khd-field-row">
+                                <label>سایز دسکتاپ</label>
+                                <input type="text" id="khd-hero-title-size-desktop" value="<?php echo esc_attr($hero_banner['title_size_desktop'] ?? '40px'); ?>">
+                            </div>
+                            <div class="khd-field-row">
+                                <label>سایز موبایل</label>
+                                <input type="text" id="khd-hero-title-size-mobile" value="<?php echo esc_attr($hero_banner['title_size_mobile'] ?? '24px'); ?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="khd-responsive-group">
+                        <div class="khd-responsive-group-title"><strong>تنظیمات توضیحات بنر اصلی</strong></div>
+                        <div class="khd-field-row" style="flex-direction:row; gap:10px; margin-bottom: 10px;">
+                            <label><input type="checkbox" id="khd-hero-show-desc" <?php checked($hero_banner['show_desc'] ?? true); ?>> نمایش توضیحات اصلی</label>
+                        </div>
+                        <div class="khd-field-row">
+                            <label>متن توضیحات اصلی</label>
+                            <textarea id="khd-hero-desc-text" rows="3" style="width:100%;"><?php echo esc_textarea($hero_banner['desc_text'] ?? ''); ?></textarea>
+                        </div>
+                        <div class="khd-field-row-row" style="margin-top:10px;">
+                            <div class="khd-field-row">
+                                <label>رنگ توضیحات</label>
+                                <input type="color" id="khd-hero-desc-color" value="<?php echo esc_attr($hero_banner['desc_color'] ?? '#dbeafe'); ?>">
+                            </div>
+                            <div class="khd-field-row">
+                                <label>سایز دسکتاپ</label>
+                                <input type="text" id="khd-hero-desc-size-desktop" value="<?php echo esc_attr($hero_banner['desc_size_desktop'] ?? '16px'); ?>">
+                            </div>
+                            <div class="khd-field-row">
+                                <label>سایز موبایل</label>
+                                <input type="text" id="khd-hero-desc-size-mobile" value="<?php echo esc_attr($hero_banner['desc_size_mobile'] ?? '12px'); ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Categories Repeater & Behavior (New!) -->
+                <div class="khd-tab-content" id="tab-categories">
+                    <h2>مدیریت هوشمند و همه‌جانبه دسته‌بندی‌ها</h2>
+                    <p class="description">آیتم‌های دسته‌بندی را اضافه، مرتب یا حذف کنید. به راحتی نوع نمایش (آیکون، تصویر، ایموجی) و عملکرد کلیک (لینک یا پاپ‌آپ AJAX) را مشخص کنید.</p>
+
+                    <div class="khd-field-row" style="margin-bottom:20px;">
+                        <label>موقعیت قرارگیری کل باکس دسته‌بندی</label>
+                        <select id="khd-categories-position-mode">
+                            <option value="absolute" <?php selected($categories_settings['position_mode'] ?? 'absolute', 'absolute'); ?>>شناور روی بنر هیرو (پوشش مطلق با مارجین منفی)</option>
+                            <option value="relative" <?php selected($categories_settings['position_mode'] ?? 'absolute', 'relative'); ?>>ساده / چسبیده به محتوای عادی سایت</option>
+                        </select>
+                    </div>
+
+                    <h3>آیتم‌های دسته‌بندی (Repeater Builder)</h3>
+                    <div id="khd-category-items-container" class="khd-sortable-list">
+                        <?php foreach ($category_items as $index => $item) : ?>
+                            <div class="khd-category-item-row" data-id="<?php echo esc_attr($item['id']); ?>" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; margin-bottom: 15px; position:relative;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">
+                                    <strong>دسته‌بندی: <span class="khd-item-label-preview"><?php echo esc_html($item['label']); ?></span></strong>
+                                    <div style="display:flex; gap:10px; align-items:center;">
+                                        <span class="khd-sortable-handle" style="cursor:move; font-size:18px;" title="ترتیب">☰</span>
+                                        <button class="khd-delete-item-btn" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">حذف آیتم</button>
+                                    </div>
+                                </div>
+
+                                <div class="khd-field-row-row">
+                                    <div class="khd-field-row">
+                                        <label>شناسه یکتا (ID)</label>
+                                        <input type="text" class="khd-item-id" value="<?php echo esc_attr($item['id']); ?>" readonly style="background:#e2e8f0; opacity:0.7;">
+                                    </div>
+                                    <div class="khd-field-row">
+                                        <label>عنوان آیتم</label>
+                                        <input type="text" class="khd-item-label" value="<?php echo esc_attr($item['label']); ?>" placeholder="مثلاً: قطار">
+                                    </div>
+                                </div>
+
+                                <div class="khd-field-row-row" style="margin-top:10px;">
+                                    <div class="khd-field-row">
+                                        <label>نوع نمایش المان</label>
+                                        <select class="khd-item-type">
+                                            <option value="icon" <?php selected($item['type'], 'icon'); ?>>آیکون FontAwesome</option>
+                                            <option value="image" <?php selected($item['type'], 'image'); ?>>تصویر سفارشی</option>
+                                            <option value="emoji" <?php selected($item['type'], 'emoji'); ?>>ایموجی (Emoji)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Dynamic Inputs depending on type selected -->
+                                    <div class="khd-field-row khd-type-panel khd-type-icon" style="<?php echo $item['type'] === 'icon' ? '' : 'display:none;'; ?>">
+                                        <label>کلاس آیکون FontAwesome</label>
+                                        <input type="text" class="khd-item-icon-val" value="<?php echo esc_attr($item['icon_val'] ?? ''); ?>" placeholder="fa-train">
+                                    </div>
+                                    <div class="khd-field-row khd-type-panel khd-type-image" style="<?php echo $item['type'] === 'image' ? '' : 'display:none;'; ?>">
+                                        <label>تصویر سفارشی</label>
+                                        <div style="display:flex; gap:5px;">
+                                            <input type="text" class="khd-item-image-url" value="<?php echo esc_attr($item['image_url'] ?? ''); ?>" placeholder="آدرس تصویر" style="flex:1;">
+                                            <button class="button khd-media-upload-btn-dynamic">آپلود</button>
+                                        </div>
+                                    </div>
+                                    <div class="khd-field-row khd-type-panel khd-type-emoji" style="<?php echo $item['type'] === 'emoji' ? '' : 'display:none;'; ?>">
+                                        <label>ایموجی دلخواه</label>
+                                        <input type="text" class="khd-item-emoji-val" value="<?php echo esc_attr($item['emoji_val'] ?? ''); ?>" placeholder="🌊" style="font-size:18px; text-align:center;">
+                                    </div>
+                                </div>
+
+                                <div class="khd-field-row-row" style="margin-top:10px; border-top:1px dashed #cbd5e1; padding-top:10px;">
+                                    <div class="khd-field-row">
+                                        <label>رفتار کلیک</label>
+                                        <select class="khd-item-behavior">
+                                            <option value="redirect" <?php selected($item['behavior'] ?? 'redirect', 'redirect'); ?>>هدایت به لینک آدرس</option>
+                                            <option value="popup" <?php selected($item['behavior'] ?? 'redirect', 'popup'); ?>>نمایش پاپ‌آپ AJAX مدرن</option>
+                                        </select>
+                                    </div>
+                                    <div class="khd-field-row khd-behavior-panel khd-behavior-redirect" style="<?php echo ($item['behavior'] ?? 'redirect') === 'redirect' ? '' : 'display:none;'; ?>">
+                                        <label>لینک مقصد / هش</label>
+                                        <input type="text" class="khd-item-target-url" value="<?php echo esc_attr($item['target_url'] ?? ''); ?>" placeholder="#train">
+                                    </div>
+                                </div>
+
+                                <div class="khd-field-row khd-behavior-panel khd-behavior-popup" style="margin-top:10px; <?php echo ($item['behavior'] ?? 'redirect') === 'popup' ? '' : 'display:none;'; ?>">
+                                    <label>محتوای پاپ‌آپ سفارشی (HTML یا کد کوتاه / Shortcode)</label>
+                                    <textarea class="khd-item-popup-html" rows="3" placeholder="اینجا کدهای HTML یا شورتکد فرم‌ها را بنویسید..."><?php echo esc_textarea($item['popup_html'] ?? ''); ?></textarea>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <button id="khd-add-category-item-btn" class="button button-primary" style="margin-top:15px; background: #10b981; border-color: #10b981; text-shadow:none;">+ افزودن دسته‌بندی جدید</button>
+                </div>
+
+                <!-- Tab 5: Global Configuration -->
                 <div class="khd-tab-content" id="tab-global">
                     <h2>رنگ‌ها و المان‌های سراسری</h2>
 
@@ -111,7 +352,7 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
                     </div>
                 </div>
 
-                <!-- Tab 3: Responsive Typography Settings -->
+                <!-- Tab 6: Responsive Typography Settings -->
                 <div class="khd-tab-content" id="tab-typography">
                     <h2>کنترل تایپوگرافی کامل به تفکیک دستگاه</h2>
 
@@ -186,7 +427,7 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
                     </div>
                 </div>
 
-                <!-- Tab 4: Responsive Spacing Overrides -->
+                <!-- Tab 7: Responsive Spacing Overrides -->
                 <div class="khd-tab-content" id="tab-spacing">
                     <h2>کنترل پدینگ و مارجین سکشن‌های اصلی</h2>
                     <p class="description">برای به هم نخوردن ساختار، فواصل به صورت پیکسلی و مجزا برای دستگاه‌های موبایل، تبلت و دسکتاپ قابل بازنشانی هستند.</p>
@@ -222,7 +463,7 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
                     </div>
                 </div>
 
-                <!-- Tab 5: WooCommerce Specific Config -->
+                <!-- Tab 8: WooCommerce Specific Config -->
                 <div class="khd-tab-content" id="tab-woocommerce">
                     <h2>تنظیمات استایل ووکامرس</h2>
                     <p class="description">استایل صفحات آرشیو، سبد خرید، حساب کاربری و محصول ووکامرس را تغییر دهید.</p>
@@ -263,7 +504,7 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
                     </div>
                 </div>
 
-                <!-- Tab 6: Custom Elements & Custom select styler -->
+                <!-- Tab 9: Custom Elements & Custom select styler -->
                 <div class="khd-tab-content" id="tab-elements">
                     <h2>تعریف استایل برای کلاس‌ها یا شناسه‌های خاص (Custom Elements)</h2>
                     <p class="description">یک سلکتور (مانند `.btn-reserve` یا `#booking-modal`) بنویسید و ظاهر پیکسلی آن را به صورت دستی مدیریت کنید.</p>
@@ -320,7 +561,7 @@ $available_fonts = \KishHarmonyDesigner\Helpers::get_available_fonts();
                     <textarea id="khd-html-2" rows="4" style="width:100%; font-family:monospace; direction:ltr; text-align:left;"><?php echo esc_textarea($settings['custom_html_2_code']); ?></textarea>
                 </div>
 
-                <!-- Tab 7: Templates / Presets Import-Export -->
+                <!-- Tab 10: Templates / Presets Import-Export -->
                 <div class="khd-tab-content" id="tab-preset">
                     <h2>مدیریت قالب‌های آماده و استایل‌ها (Preset Templates)</h2>
                     <p class="description">استایل‌های فعلی خود را دانلود کنید یا یک پریست آماده ایمپورت کنید.</p>
