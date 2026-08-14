@@ -43,98 +43,178 @@
     ?>
 
     <style>
-        body { font-family: 'Vazirmatn', sans-serif !important; direction: rtl; text-align: right; background-color: #f8fafc; }
-        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #18D6D8; border-radius: 10px; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        /* Dynamic Header Column Styling */
+        body {
+            font-family: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+            background-color: #ffffff;
+            color: #1e293b;
+            line-height: 1.5;
+            min-height: 200vh;
+        }
+
+        /* User's Exact Glassy Header CSS Spec */
         .header {
-            transition: all <?php echo esc_attr($anim_speed); ?> ease-in-out;
-            border-radius: <?php echo esc_attr($hdr['border_radius'] ?? '12px'); ?> !important;
-            border: 1px solid <?php echo esc_attr($hdr['border_color'] ?? '#cbd5e1'); ?> !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 20px;
-            background: #ffffff;
-            margin: 10px auto;
-            max-width: 95%;
-            z-index: 50;
+            padding: 0 1.8rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 0;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            transition: all <?php echo esc_attr($anim_speed); ?> cubic-bezier(0.45, 0, 0.55, 1.0);
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.18) !important;
+            backdrop-filter: blur(28px) saturate(200%) !important;
+            -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+            border-radius: <?php echo esc_attr($hdr['border_radius'] ?? '50px'); ?> !important;
+            top: 14px !important;
+            left: 3% !important;
+            width: 94% !important;
+            height: 58px !important;
+            padding: 0 2.2rem !important;
+            border: 1px solid <?php echo esc_attr($hdr['border_color'] ?? 'rgba(255, 255, 255, 0.35)'); ?> !important;
+            box-shadow:
+                0 20px 40px -12px rgba(0, 0, 0, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
         }
 
         .header__left {
-            background-color: <?php echo esc_attr($hdr['bg_left'] ?? '#ffffff'); ?>;
+            flex: 1;
             display: flex;
+            justify-content: flex-start;
             align-items: center;
-            gap: 10px;
-            padding: 6px 12px;
+            background-color: <?php echo esc_attr($hdr['bg_left'] ?? 'transparent'); ?>;
             border-radius: 8px;
         }
 
         .header__center {
-            background-color: <?php echo esc_attr($hdr['bg_center'] ?? '#ffffff'); ?>;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            padding: 6px 12px;
+            flex: 1;
+            background-color: <?php echo esc_attr($hdr['bg_center'] ?? 'transparent'); ?>;
             border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .header__right {
-            background-color: <?php echo esc_attr($hdr['bg_right'] ?? '#ffffff'); ?>;
+            flex: 1;
             display: flex;
+            justify-content: flex-end;
             align-items: center;
-            gap: 12px;
-            padding: 6px 12px;
+            gap: 1rem;
+            background-color: <?php echo esc_attr($hdr['bg_right'] ?? 'transparent'); ?>;
             border-radius: 8px;
         }
 
-        /* Responsive menu styling */
         .hamburger {
-            display: <?php echo $hamburger_on_desktop ? 'flex' : 'none'; ?>;
+            display: flex;
             flex-direction: column;
-            gap: 4px;
+            justify-content: space-between;
+            width: 36px;
+            height: 28px;
+            padding: 0.5rem;
             background: none;
             border: none;
             cursor: pointer;
-        }
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex !important;
-            }
-            .header-nav-menu-container {
-                display: none !important;
-            }
+            gap: 5px;
         }
 
         .hamburger span {
             display: block;
-            width: 24px;
-            height: 2px;
-            background-color: #334155;
-            transition: 0.3s;
+            height: 2.5px;
+            background-color: #2d2d2d;
+            border-radius: 3px;
         }
 
-        /* Header link hover states with transitions */
+        .header__icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: transparent;
+            color: #2d2d2d;
+            transition: background 0.3s ease, color 0.3s ease;
+            text-decoration: none;
+        }
+
         .header__icon svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: none;
             stroke: currentColor;
-            stroke-width: 2;
+            stroke-width: 1.8;
             stroke-linecap: round;
             stroke-linejoin: round;
-            transition: transform <?php echo esc_attr($anim_speed); ?> ease;
         }
 
-        .header__icon:hover svg {
-            transform: scale(1.1);
+        .header__icon:hover {
+            background: rgba(255, 255, 255, 0.4);
+            color: #1a1a1a;
         }
+
+        /* Floating Logo Styles */
+        .floating-logo {
+            position: fixed;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: white;
+            text-decoration: none;
+            white-space: nowrap;
+            left: 50%;
+            top: 0;
+            transform: translate(-50%, -50%);
+            will-change: top;
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 18px;
+            font-size: 1.8rem;
+            width: 56px;
+            height: 56px;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            font-size: 2.2rem;
+        }
+
+        /* Fallbacks */
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #18D6D8; border-radius: 10px; }
     </style>
 </head>
-<body <?php body_class('bg-slate-50 font-sans text-slate-800 antialiased selection:bg-[#18D6D8] selection:text-slate-900'); ?>>
+<body <?php body_class('bg-white font-sans text-slate-800 antialiased selection:bg-[#18D6D8] selection:text-slate-900'); ?>>
 <?php wp_body_open(); ?>
 
 <?php if (is_front_page() || is_home()) : ?>
@@ -143,7 +223,7 @@
     <!-- ========================================== -->
     <header class="header" id="header">
         <div class="header__left">
-            <button class="hamburger" aria-label="منو" id="mobile-menu-btn" style="display: <?php echo $hamburger_on_desktop ? 'flex' : 'none'; ?>;">
+            <button class="hamburger" aria-label="منو" id="mobile-menu-btn" style="display: <?php echo ($hamburger_on_desktop || $menu_id == 0) ? 'flex' : 'none'; ?>;">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -158,11 +238,7 @@
                 )); ?>
             <?php endif; ?>
         </div>
-
-        <div class="header__center">
-            <!-- Floating Logo scrolls here if it is the home page -->
-        </div>
-
+        <div class="header__center"></div>
         <div class="header__right">
             <a href="#" class="header__icon" aria-label="سبد خرید" id="cart-toggle-btn">
                 <svg viewBox="0 0 24 24">
@@ -180,139 +256,22 @@
         </div>
     </header>
 
-    <!-- Floating Logo Markup -->
     <a href="<?php echo esc_url(home_url('/')); ?>" class="floating-logo" id="floatingLogo">
         <?php if (!empty($logo_url)) : ?>
-            <img src="<?php echo esc_url($logo_url); ?>" alt="کیش هارمونی" style="max-height: 50px; object-fit: contain; transition: all <?php echo esc_attr($anim_speed); ?> ease;" class="logo-image-file">
+            <img src="<?php echo esc_url($logo_url); ?>" alt="لوگو" style="max-height: 56px; object-fit: contain; border-radius: 12px;" class="logo-image-file">
         <?php else : ?>
             <span class="logo-icon">✦</span>
-            <span class="logo-text">کیش هارمونی</span>
+            <span class="logo-text"><?php echo esc_html(!empty($settings['hero_banner']['lang_switcher_text']) ? 'کیش هارمونی' : 'کیش هارمونی'); ?></span>
         <?php endif; ?>
     </a>
-
-    <!-- Floating Logo Scroll and Transition Logic -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const header = document.getElementById('header');
-        const floatingLogo = document.getElementById('floatingLogo');
-        const logoIcon = floatingLogo.querySelector('.logo-icon');
-        const logoText = floatingLogo.querySelector('.logo-text');
-        const logoImg = floatingLogo.querySelector('.logo-image-file');
-        const banner = document.querySelector('.banner');
-
-        if (!header || !floatingLogo || !banner) return;
-
-        let bannerCenterY = 0;
-        let headerCenterY = 0;
-
-        const LARGE_ICON_SIZE = 56;
-        const SMALL_ICON_SIZE = 36;
-        const LARGE_TEXT_SIZE_REM = 2.2;
-        const SMALL_TEXT_SIZE_REM = 1.3;
-
-        function updatePositions() {
-            const bannerRect = banner.getBoundingClientRect();
-            bannerCenterY = window.scrollY + bannerRect.top + (bannerRect.height / 2);
-
-            const width = window.innerWidth;
-            let scrolledTop, scrolledHeight;
-            if (width <= 480) {
-                scrolledTop = 6;
-                scrolledHeight = 52;
-            } else if (width <= 768) {
-                scrolledTop = 8;
-                scrolledHeight = 52;
-            } else {
-                scrolledTop = 14;
-                scrolledHeight = 58;
-            }
-            headerCenterY = scrolledTop + (scrolledHeight / 2);
-
-            if (window.scrollY <= 10) {
-                floatingLogo.style.top = bannerCenterY + 'px';
-            }
-        }
-
-        function easeInOutCubic(t) {
-            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        }
-
-        function getScrollProgress() {
-            const maxScroll = 200;
-            const raw = Math.min(window.scrollY / maxScroll, 1.0);
-            return easeInOutCubic(raw);
-        }
-
-        function updateLogo(progress) {
-            const currentY = bannerCenterY + (headerCenterY - bannerCenterY) * progress;
-            floatingLogo.style.top = currentY + 'px';
-
-            if (logoIcon && logoText) {
-                const iconSize = LARGE_ICON_SIZE + (SMALL_ICON_SIZE - LARGE_ICON_SIZE) * progress;
-                const textSizeRem = LARGE_TEXT_SIZE_REM + (SMALL_TEXT_SIZE_REM - LARGE_TEXT_SIZE_REM) * progress;
-
-                logoIcon.style.width = iconSize + 'px';
-                logoIcon.style.height = iconSize + 'px';
-                logoIcon.style.fontSize = (iconSize * 0.55) + 'px';
-                logoText.style.fontSize = textSizeRem + 'rem';
-                logoIcon.style.borderRadius = (18 + (12 - 18) * progress) + 'px';
-            }
-
-            if (logoImg) {
-                const imgScale = 1.3 - (0.4 * progress);
-                logoImg.style.transform = `scale(${imgScale})`;
-            }
-
-            // Text color changes as it enters the glassy header
-            if (progress > 0.8) {
-                floatingLogo.style.color = '#1e1e2f';
-            } else {
-                floatingLogo.style.color = 'white';
-            }
-        }
-
-        let ticking = false;
-        function onScroll() {
-            if (window.scrollY > 10) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const progress = getScrollProgress();
-                    updateLogo(progress);
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', () => {
-            updatePositions();
-            const progress = getScrollProgress();
-            updateLogo(progress);
-        });
-
-        // Initialize positions
-        updatePositions();
-        updateLogo(getScrollProgress());
-        window.addEventListener('load', () => {
-            updatePositions();
-            updateLogo(getScrollProgress());
-        });
-    });
-    </script>
 
 <?php else : ?>
     <!-- ========================================== -->
     <!-- 2. INNER PAGES HEADER (Static/Central Logo)-->
     <!-- ========================================== -->
-    <header class="header" id="header">
+    <header class="header scrolled" id="header" style="position: sticky; top: 14px; margin-bottom: 30px;">
         <div class="header__left">
-            <button class="hamburger" aria-label="منو" id="mobile-menu-btn" style="display: <?php echo $hamburger_on_desktop ? 'flex' : 'none'; ?>;">
+            <button class="hamburger" aria-label="منو" id="mobile-menu-btn" style="display: <?php echo ($hamburger_on_desktop || $menu_id == 0) ? 'flex' : 'none'; ?>;">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -328,12 +287,12 @@
             <?php endif; ?>
         </div>
         <div class="header__center">
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="header-logo">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="header-logo" style="display: flex; align-items: center; gap: 0.6rem; color: #1e1e2f; text-decoration: none;">
                 <?php if (!empty($logo_url)) : ?>
-                    <img src="<?php echo esc_url($logo_url); ?>" alt="کیش هارمونی" style="max-height: 40px; object-fit: contain;">
+                    <img src="<?php echo esc_url($logo_url); ?>" alt="لوگو" style="max-height: 40px; object-fit: contain;">
                 <?php else : ?>
-                    <span class="logo-icon">✦</span>
-                    <span class="logo-text">کیش هارمونی</span>
+                    <span class="logo-icon" style="display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 12px; width: 36px; height: 36px; font-size: 1.1rem;">✦</span>
+                    <span class="logo-text" style="font-weight: 800; font-size: 1.3rem;">کیش هارمونی</span>
                 <?php endif; ?>
             </a>
         </div>
@@ -353,24 +312,6 @@
             </a>
         </div>
     </header>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const header = document.getElementById('header');
-        if (!header) return;
-
-        function updateHeaderClass() {
-            if (window.scrollY > 10) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        }
-
-        window.addEventListener('scroll', updateHeaderClass, { passive: true });
-        updateHeaderClass();
-    });
-    </script>
 <?php endif; ?>
 
 <!-- React Root Container - Mounted automatically by app-bundle.js -->

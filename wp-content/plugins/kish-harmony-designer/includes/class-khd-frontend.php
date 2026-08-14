@@ -192,7 +192,8 @@ class Frontend {
 
         /* Spacing Padding and Margins Override via CSS Custom Properties */
         .hero {
-            padding-top: " . ($s['hero']['desktop']['padding_top'] ?? '24px') . " !important;
+            background-color: var(--harmony-primary-color) !important;
+            padding-top: " . ($s['hero']['desktop']['padding_top'] ?? '70px') . " !important;
             padding-bottom: " . ($s['hero']['desktop']['padding_bottom'] ?? '24px') . " !important;
             margin-bottom: " . ($s['hero']['desktop']['margin_bottom'] ?? '176px') . " !important;
         }
@@ -200,6 +201,15 @@ class Frontend {
         .search-filter-section {
             padding: " . ($s['search']['desktop']['padding'] ?? '24px') . " !important;
             margin-bottom: " . ($s['search']['desktop']['margin_bottom'] ?? '64px') . " !important;
+        }
+
+        /* Connecting Categories dynamic rounds and text settings */
+        .categories-grid {
+            border-radius: var(--harmony-border-radius) !important;
+        }
+
+        .category-item {
+            transition: background-color " . ($hdr['animation_speed'] ?? '300ms') . " ease;
         }
 
         /* Tablet Responsive Fallback Overrides */
