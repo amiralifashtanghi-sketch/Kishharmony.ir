@@ -1,0 +1,556 @@
+jQuery(document).ready(function($) {
+    // Tab switching mechanism
+    $('.khd-tab-btn').on('click', function(e) {
+        e.preventDefault();
+        var targetTab = $(this).data('tab');
+
+        $('.khd-tab-btn').removeClass('active');
+        $(this).addClass('active');
+
+        $('.khd-tab-content').removeClass('active');
+        $('#tab-' + targetTab).addClass('active');
+    });
+
+    // Picker Toggle Button
+    var isPickerActive = false;
+    $('#khd-picker-toggle-btn').on('click', function(e) {
+        e.preventDefault();
+        isPickerActive = !isPickerActive;
+
+        if (isPickerActive) {
+            $(this).css('background', '#ef4444').css('color', '#fff');
+            $(this).find('span').text('در حال انتخاب...');
+        } else {
+            $(this).css('background', '#fff').css('color', '#0f172a');
+            $(this).find('span').text('انتخاب‌گر زنده');
+        }
+
+        var previewFrame = document.getElementById('khd-live-preview-iframe');
+        if (previewFrame && previewFrame.contentWindow) {
+            previewFrame.contentWindow.postMessage({
+                action: 'khd_toggle_picker',
+                active: isPickerActive
+            }, '*');
+        }
+    });
+
+    // Listen for element picker selection events sent FROM the preview iframe
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.action === 'khd_element_selected') {
+            var selector = event.data.selector;
+            var styles = event.data.styles || {};
+
+            // Add new custom selector row automatically in the elements tab
+            addCustomSelectorRow(selector, styles);
+
+            // Switch to Elements tab so the user sees the new styling controls
+            $('.khd-tab-btn[data-tab="elements"]').click();
+
+            // Deactivate picker visually
+            isPickerActive = false;
+            $('#khd-picker-toggle-btn').css('background', '#fff').css('color', '#0f172a');
+            $('#khd-picker-toggle-btn').find('span').text('انتخاب‌گر زنده');
+        }
+    });
+
+    function addCustomSelectorRow(selector, styles) {
+        var rowHtml = `
+        <div class="khd-custom-sel-row" style="background:#f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+            <div style="display:flex; gap:10px; margin-bottom: 8px;">
+                <input type="text" class="khd-sel-input" value="${selector}" placeholder="سلکتور CSS مانند .btn-custom یا #my-box" style="flex:2;">
+                <button class="button khd-remove-sel-btn" style="background:#ef4444; color:#fff; border:none; padding:5px 12px; border-radius:4px; cursor:pointer;">حذف</button>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">رنگ متن</label>
+                    <input type="color" class="khd-sel-color" value="${styles.color || '#000000'}" style="width:100%; height:30px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">رنگ پس‌زمینه</label>
+                    <input type="color" class="khd-sel-bg" value="${styles.bg_color || '#ffffff'}" style="width:100%; height:30px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">سایز فونت</label>
+                    <input type="text" class="khd-sel-size" value="${styles.font_size || ''}" placeholder="16px">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">فاصله داخلی (Padding)</label>
+                    <input type="text" class="khd-sel-padding" value="${styles.padding || ''}" placeholder="10px">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">فاصله خارجی (Margin)</label>
+                    <input type="text" class="khd-sel-margin" value="${styles.margin || ''}" placeholder="0 0 10px 0">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">گردی گوشه‌ها</label>
+                    <input type="text" class="khd-sel-radius" value="${styles.border_radius || ''}" placeholder="12px">
+                </div>
+            </div>
+        </div>
+        `;
+        $('#khd-custom-selectors-container').append(rowHtml);
+        triggerLivePreviewUpdate();
+    }
+
+    // Live Preview Device Switcher Click Handler
+    $('.khd-device-btn').on('click', function(e) {
+        e.preventDefault();
+        $('.khd-device-btn').css('background', '#fff').css('color', '#000').removeClass('active');
+        $(this).css('background', '#0b63d8').css('color', '#fff').addClass('active');
+
+        var device = $(this).data('device');
+        var iframe = $('#khd-live-preview-iframe');
+
+        if (device === 'desktop') {
+            iframe.css('width', '100%');
+        } else if (device === 'tablet') {
+            var val = $('#khd-tablet-breakpoint').val() || '1024px';
+            if (!isNaN(val) && val.indexOf('px') === -1) val += 'px';
+            iframe.css('width', val);
+        } else if (device === 'mobile') {
+            var val = $('#khd-mobile-breakpoint').val() || '640px';
+            if (!isNaN(val) && val.indexOf('px') === -1) val += 'px';
+            iframe.css('width', val);
+        }
+    });
+
+    // Make sections and category items sortable (drag & drop layout builder)
+    $('.khd-sortable-list').sortable({
+        handle: '.khd-sortable-handle',
+        update: function(event, ui) {
+            triggerLivePreviewUpdate();
+        }
+    });
+
+    // Active switch change triggers
+    $(document).on('change', '.khd-section-toggle', function() {
+        triggerLivePreviewUpdate();
+    });
+
+    // Standard settings live key-up event to reflect CSS changes instantly in live preview iframe
+    $('input, select, textarea').on('input change', function() {
+        triggerLivePreviewUpdate();
+    });
+
+    // Handle Category Item type dynamic visibility
+    $(document).on('change', '.khd-item-type', function() {
+        var $row = $(this).closest('.khd-category-item-row');
+        var val = $(this).val();
+        $row.find('.khd-type-panel').hide();
+        $row.find('.khd-type-' + val).show();
+        triggerLivePreviewUpdate();
+    });
+
+    // Handle Category Item click behavior dynamic visibility
+    $(document).on('change', '.khd-item-behavior', function() {
+        var $row = $(this).closest('.khd-category-item-row');
+        var val = $(this).val();
+        $row.find('.khd-behavior-panel').hide();
+        $row.find('.khd-behavior-' + val).show();
+        triggerLivePreviewUpdate();
+    });
+
+    // Sync label preview in real-time
+    $(document).on('input', '.khd-item-label', function() {
+        var val = $(this).val();
+        $(this).closest('.khd-category-item-row').find('.khd-item-label-preview').text(val);
+    });
+
+    // Media Uploader for Custom Logos / Images
+    $(document).on('click', '.khd-media-upload-btn', function(e) {
+        e.preventDefault();
+        var targetId = $(this).data('target');
+        var frame = wp.media({
+            title: 'انتخاب تصویر',
+            button: { text: 'استفاده از این تصویر' },
+            multiple: false
+        });
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#' + targetId).val(attachment.url).trigger('change');
+        });
+        frame.open();
+    });
+
+    // Media Uploader for Dynamic Repeater Items
+    $(document).on('click', '.khd-media-upload-btn-dynamic', function(e) {
+        e.preventDefault();
+        var $input = $(this).siblings('input');
+        var frame = wp.media({
+            title: 'انتخاب تصویر دسته‌بندی',
+            button: { text: 'انتخاب تصویر' },
+            multiple: false
+        });
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $input.val(attachment.url).trigger('change');
+        });
+        frame.open();
+    });
+
+    // Delete category item row
+    $(document).on('click', '.khd-delete-item-btn', function(e) {
+        e.preventDefault();
+        if (confirm('آیا از حذف این دسته‌بندی مطمئن هستید؟')) {
+            $(this).closest('.khd-category-item-row').remove();
+            triggerLivePreviewUpdate();
+        }
+    });
+
+    // Add new Category Item Row
+    $('#khd-add-category-item-btn').on('click', function(e) {
+        e.preventDefault();
+        var uniqueId = 'cat_' + Date.now();
+        var itemHtml = `
+        <div class="khd-category-item-row" data-id="${uniqueId}" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 15px; margin-bottom: 15px; position:relative;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:10px;">
+                <strong>دسته‌بندی: <span class="khd-item-label-preview">دسته‌بندی جدید</span></strong>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span class="khd-sortable-handle" style="cursor:move; font-size:18px;" title="ترتیب">☰</span>
+                    <button class="khd-delete-item-btn" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">حذف آیتم</button>
+                </div>
+            </div>
+
+            <div class="khd-field-row-row">
+                <div class="khd-field-row">
+                    <label>شناسه یکتا (ID)</label>
+                    <input type="text" class="khd-item-id" value="${uniqueId}" readonly style="background:#e2e8f0; opacity:0.7;">
+                </div>
+                <div class="khd-field-row">
+                    <label>عنوان آیتم</label>
+                    <input type="text" class="khd-item-label" placeholder="مثلاً: تفریحات آبی" value="دسته‌بندی جدید">
+                </div>
+            </div>
+
+            <div class="khd-field-row-row" style="margin-top:10px;">
+                <div class="khd-field-row">
+                    <label>نوع نمایش المان</label>
+                    <select class="khd-item-type">
+                        <option value="icon" selected>آیکون FontAwesome</option>
+                        <option value="image">تصویر سفارشی</option>
+                        <option value="emoji">ایموجی (Emoji)</option>
+                    </select>
+                </div>
+
+                <div class="khd-field-row khd-type-panel khd-type-icon">
+                    <label>کلاس آیکون FontAwesome</label>
+                    <input type="text" class="khd-item-icon-val" placeholder="fa-umbrella-beach" value="fa-umbrella-beach">
+                </div>
+                <div class="khd-field-row khd-type-panel khd-type-image" style="display:none;">
+                    <label>تصویر سفارشی</label>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" class="khd-item-image-url" placeholder="آدرس تصویر">
+                        <button class="button khd-media-upload-btn-dynamic">آپلود</button>
+                    </div>
+                </div>
+                <div class="khd-field-row khd-type-panel khd-type-emoji" style="display:none;">
+                    <label>ایموجی دلخواه</label>
+                    <input type="text" class="khd-item-emoji-val" placeholder="🏄" style="font-size:18px; text-align:center;">
+                </div>
+            </div>
+
+            <div class="khd-field-row-row" style="margin-top:10px; border-top:1px dashed #cbd5e1; padding-top:10px;">
+                <div class="khd-field-row">
+                    <label>رفتار کلیک</label>
+                    <select class="khd-item-behavior">
+                        <option value="redirect" selected>هدایت به لینک آدرس</option>
+                        <option value="popup">نمایش پاپ‌آپ AJAX مدرن</option>
+                    </select>
+                </div>
+                <div class="khd-field-row khd-behavior-panel khd-behavior-redirect">
+                    <label>لینک مقصد / هش</label>
+                    <input type="text" class="khd-item-target-url" placeholder="#sports" value="#sports">
+                </div>
+            </div>
+
+            <div class="khd-behavior-panel khd-behavior-popup" style="margin-top:10px; display:none;">
+                <label>محتوای پاپ‌آپ سفارشی (HTML یا کد کوتاه / Shortcode)</label>
+                <textarea class="khd-item-popup-html" rows="3" placeholder="اینجا کدهای HTML یا شورتکد فرم‌ها را بنویسید..."></textarea>
+            </div>
+        </div>
+        `;
+        $('#khd-category-items-container').append(itemHtml);
+        triggerLivePreviewUpdate();
+    });
+
+    // Handle Live preview connection with the template Iframe
+    function triggerLivePreviewUpdate() {
+        var settings = gatherAllSettings();
+
+        // Post current temporary CSS configs to the preview Iframe for dynamic render
+        var previewFrame = document.getElementById('khd-live-preview-iframe');
+        if (previewFrame && previewFrame.contentWindow) {
+            previewFrame.contentWindow.postMessage({
+                action: 'khd_preview_update',
+                settings: settings
+            }, '*');
+        }
+    }
+
+    // Collect all inputs from settings page to construct standard JSON configuration array
+    function gatherAllSettings() {
+        var sections = [];
+        $('.khd-sortable-item').each(function() {
+            sections.push({
+                id: $(this).data('id'),
+                name: $(this).find('.khd-section-title-label').text(),
+                active: $(this).find('.khd-section-toggle').is(':checked')
+            });
+        });
+
+        // Category items (Repeater)
+        var categoryItems = [];
+        $('.khd-category-item-row').each(function() {
+            categoryItems.push({
+                id: $(this).data('id') || $(this).find('.khd-item-id').val(),
+                label: $(this).find('.khd-item-label').val(),
+                type: $(this).find('.khd-item-type').val(),
+                icon_val: $(this).find('.khd-item-icon-val').val(),
+                image_url: $(this).find('.khd-item-image-url').val(),
+                emoji_val: $(this).find('.khd-item-emoji-val').val(),
+                behavior: $(this).find('.khd-item-behavior').val(),
+                target_url: $(this).find('.khd-item-target-url').val(),
+                popup_html: $(this).find('.khd-item-popup-html').val()
+            });
+        });
+
+        var settings = {
+            sections: sections,
+            global: {
+                primary_color: $('#khd-primary-color').val(),
+                secondary_color: $('#khd-secondary-color').val(),
+                bg_color: $('#khd-bg-color').val(),
+                text_color: $('#khd-text-color').val(),
+                accent_color: $('#khd-accent-color').val(),
+                font_family: $('#khd-font-family').val(),
+                border_radius: $('#khd-border-radius').val(),
+                container_width: $('#khd-container-width').val()
+            },
+            header: {
+                menu_id: $('#khd-header-menu').val(),
+                bg_left: $('#khd-header-bg-left').val(),
+                bg_center: $('#khd-header-bg-center').val(),
+                bg_right: $('#khd-header-bg-right').val(),
+                border_color: $('#khd-header-border-color').val(),
+                border_radius: $('#khd-header-border-radius').val(),
+                hamburger_on_desktop: $('#khd-header-hamburger-desktop').is(':checked'),
+                animation_speed: $('#khd-header-animation-speed').val(),
+                custom_logo: $('#khd-header-custom-logo').val()
+            },
+            hero_banner: {
+                bg_color: $('#khd-hero-bg-color').val(),
+                show_title: $('#khd-hero-show-title').is(':checked'),
+                show_desc: $('#khd-hero-show-desc').is(':checked'),
+                title_text: $('#khd-hero-title-text').val(),
+                desc_text: $('#khd-hero-desc-text').val(),
+                title_color: $('#khd-hero-title-color').val(),
+                desc_color: $('#khd-hero-desc-color').val(),
+                title_size_desktop: $('#khd-hero-title-size-desktop').val(),
+                title_size_mobile: $('#khd-hero-title-size-mobile').val(),
+                desc_size_desktop: $('#khd-hero-desc-size-desktop').val(),
+                desc_size_mobile: $('#khd-hero-desc-size-mobile').val(),
+                lang_switcher_position: $('#khd-hero-lang-pos').val(),
+                lang_switcher_text: $('#khd-hero-lang-text').val()
+            },
+            categories_settings: {
+                position_mode: $('#khd-categories-position-mode').val()
+            },
+            category_items: categoryItems,
+            typography: {
+                h1: {
+                    desktop: { size: $('#khd-h1-size-desktop').val(), weight: $('#khd-h1-weight-desktop').val(), line_height: $('#khd-h1-lh-desktop').val(), letter_spacing: $('#khd-h1-ls-desktop').val() },
+                    tablet: { size: $('#khd-h1-size-tablet').val(), weight: $('#khd-h1-weight-tablet').val(), line_height: $('#khd-h1-lh-tablet').val(), letter_spacing: '0px' },
+                    mobile: { size: $('#khd-h1-size-mobile').val(), weight: $('#khd-h1-weight-mobile').val(), line_height: $('#khd-h1-lh-mobile').val(), letter_spacing: '0px' }
+                },
+                h2: {
+                    desktop: { size: $('#khd-h2-size-desktop').val(), weight: $('#khd-h2-weight-desktop').val(), line_height: $('#khd-h2-lh-desktop').val(), letter_spacing: '0px' },
+                    tablet: { size: $('#khd-h2-size-tablet').val(), weight: $('#khd-h2-weight-tablet').val(), line_height: $('#khd-h2-lh-tablet').val(), letter_spacing: '0px' },
+                    mobile: { size: $('#khd-h2-size-mobile').val(), weight: $('#khd-h2-weight-mobile').val(), line_height: $('#khd-h2-lh-mobile').val(), letter_spacing: '0px' }
+                },
+                body: {
+                    desktop: { size: $('#khd-body-size-desktop').val(), weight: $('#khd-body-weight-desktop').val(), line_height: $('#khd-body-lh-desktop').val(), letter_spacing: '0px' },
+                    tablet: { size: $('#khd-body-size-tablet').val(), weight: $('#khd-body-weight-tablet').val(), line_height: $('#khd-body-lh-tablet').val(), letter_spacing: '0px' },
+                    mobile: { size: $('#khd-body-size-mobile').val(), weight: $('#khd-body-weight-mobile').val(), line_height: $('#khd-body-lh-mobile').val(), letter_spacing: '0px' }
+                }
+            },
+            spacing: {
+                hero: {
+                    desktop: { padding_top: $('#khd-hero-pt-desktop').val(), padding_bottom: $('#khd-hero-pb-desktop').val(), margin_bottom: $('#khd-hero-mb-desktop').val() },
+                    tablet: { padding_top: $('#khd-hero-pt-tablet').val(), padding_bottom: $('#khd-hero-pb-tablet').val(), margin_bottom: $('#khd-hero-mb-tablet').val() },
+                    mobile: { padding_top: $('#khd-hero-pt-mobile').val(), padding_bottom: $('#khd-hero-pb-mobile').val(), margin_bottom: $('#khd-hero-mb-mobile').val() }
+                },
+                search: {
+                    desktop: { padding: $('#khd-search-p-desktop').val(), margin_bottom: $('#khd-search-mb-desktop').val() },
+                    tablet: { padding: $('#khd-search-p-tablet').val(), margin_bottom: $('#khd-search-mb-tablet').val() },
+                    mobile: { padding: $('#khd-search-p-mobile').val(), margin_bottom: $('#khd-search-mb-mobile').val() }
+                }
+            },
+            woocommerce: {
+                card_bg: $('#khd-woo-card-bg').val(),
+                card_border_radius: $('#khd-woo-card-radius').val(),
+                button_bg: $('#khd-woo-btn-bg').val(),
+                button_text_color: $('#khd-woo-btn-text').val(),
+                show_rating: $('#khd-woo-rating').is(':checked'),
+                show_price: $('#khd-woo-price').is(':checked')
+            },
+            custom_css: $('#khd-custom-css').val(),
+            custom_html_1_code: $('#khd-html-1').val(),
+            custom_html_2_code: $('#khd-html-2').val(),
+            custom_selectors: []
+        };
+
+        // Custom selectors
+        $('.khd-custom-sel-row').each(function() {
+            var sel = $(this).find('.khd-sel-input').val();
+            if (sel) {
+                settings.custom_selectors.push({
+                    selector: sel,
+                    color: $(this).find('.khd-sel-color').val(),
+                    bg_color: $(this).find('.khd-sel-bg').val(),
+                    font_size: $(this).find('.khd-sel-size').val(),
+                    padding: $(this).find('.khd-sel-padding').val(),
+                    margin: $(this).find('.khd-sel-margin').val(),
+                    border_radius: $(this).find('.khd-sel-radius').val()
+                });
+            }
+        });
+
+        return settings;
+    }
+
+    // Add Custom CSS Selectors styling row helper
+    $('#khd-add-selector-btn').on('click', function(e) {
+        e.preventDefault();
+        var rowHtml = `
+        <div class="khd-custom-sel-row" style="background:#f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+            <div style="display:flex; gap:10px; margin-bottom: 8px;">
+                <input type="text" class="khd-sel-input" placeholder="سلکتور CSS مانند .btn-custom یا #my-box" style="flex:2;">
+                <button class="button khd-remove-sel-btn" style="background:#ef4444; color:#fff; border:none;">حذف</button>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">رنگ متن</label>
+                    <input type="color" class="khd-sel-color" style="width:100%; height:30px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">رنگ پس‌زمینه</label>
+                    <input type="color" class="khd-sel-bg" style="width:100%; height:30px;">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">سایز فونت</label>
+                    <input type="text" class="khd-sel-size" placeholder="16px">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">فاصله داخلی (Padding)</label>
+                    <input type="text" class="khd-sel-padding" placeholder="10px">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">فاصله خارجی (Margin)</label>
+                    <input type="text" class="khd-sel-margin" placeholder="0 0 10px 0">
+                </div>
+                <div>
+                    <label style="font-size:11px; display:block; margin-bottom:2px;">گردی گوشه‌ها</label>
+                    <input type="text" class="khd-sel-radius" placeholder="12px">
+                </div>
+            </div>
+        </div>
+        `;
+        $('#khd-custom-selectors-container').append(rowHtml);
+    });
+
+    $(document).on('click', '.khd-remove-sel-btn', function(e) {
+        e.preventDefault();
+        $(this).closest('.khd-custom-sel-row').remove();
+        triggerLivePreviewUpdate();
+    });
+
+    // Save Settings Event
+    $('#khd-save-settings-btn').on('click', function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var originalText = $btn.text();
+
+        $btn.text('در حال ذخیره...').prop('disabled', true);
+
+        var settings = gatherAllSettings();
+
+        $.ajax({
+            url: khdAdmin.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'khd_save_settings',
+                nonce: khdAdmin.nonce,
+                settings: JSON.stringify(settings)
+            },
+            success: function(response) {
+                $btn.text(originalText).prop('disabled', false);
+                if (response.success) {
+                    alert(response.data.message);
+                    // Reload Iframe on save
+                    document.getElementById('khd-live-preview-iframe').contentWindow.location.reload();
+                } else {
+                    alert('خطا: ' + response.data.message);
+                }
+            },
+            error: function() {
+                $btn.text(originalText).prop('disabled', false);
+                alert('خطایی در ارتباط با سرور رخ داده است.');
+            }
+        });
+    });
+
+    // Preset import / export helper triggers
+    $('#khd-export-btn').on('click', function(e) {
+        e.preventDefault();
+        var settings = gatherAllSettings();
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(settings, null, 2));
+        var dlAnchorElem = document.createElement('a');
+        dlAnchorElem.setAttribute("href",     dataStr);
+        dlAnchorElem.setAttribute("download", "harmony-designer-preset.json");
+        dlAnchorElem.click();
+    });
+
+    $('#khd-import-btn').on('click', function(e) {
+        e.preventDefault();
+        var jsonText = prompt('محتوای فایل JSON کپی شده را اینجا قرار دهید:');
+        if (jsonText) {
+            try {
+                var settings = JSON.parse(jsonText);
+                applyPresetsToInputs(settings);
+                alert('تنظیمات قالب با موفقیت ایمپورت شد! برای اعمال کامل دکمه ذخیره تنظیمات را بزنید.');
+                triggerLivePreviewUpdate();
+            } catch(err) {
+                alert('خطا در خواندن فایل JSON. ساختار نامعتبر است.');
+            }
+        }
+    });
+
+    function applyPresetsToInputs(settings) {
+        if (!settings) return;
+
+        // Global styling inputs
+        if (settings.global) {
+            $('#khd-primary-color').val(settings.global.primary_color);
+            $('#khd-secondary-color').val(settings.global.secondary_color);
+            $('#khd-bg-color').val(settings.global.bg_color);
+            $('#khd-text-color').val(settings.global.text_color);
+            $('#khd-accent-color').val(settings.global.accent_color);
+            $('#khd-font-family').val(settings.global.font_family);
+            $('#khd-border-radius').val(settings.global.border_radius);
+            $('#khd-container-width').val(settings.global.container_width);
+        }
+
+        // Custom CSS
+        if (settings.custom_css) {
+            $('#khd-custom-css').val(settings.custom_css);
+        }
+
+        // Custom HTML blocks
+        if (settings.custom_html_1_code) {
+            $('#khd-html-1').val(settings.custom_html_1_code);
+        }
+        if (settings.custom_html_2_code) {
+            $('#khd-html-2').val(settings.custom_html_2_code);
+        }
+    }
+});

@@ -1,0 +1,281 @@
+/* Kish Harmony Designer Admin Modern CSS styling */
+.khd-admin-container {
+    margin: 20px 20px 0 0;
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    direction: rtl;
+    max-width: 1550px;
+}
+
+.khd-header-panel {
+    background: linear-gradient(135deg, #0B63D8, #18D6D8);
+    color: #ffffff;
+    padding: 24px 32px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 25px rgba(11, 99, 216, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.khd-header-panel h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.khd-header-panel p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.khd-save-btn {
+    background-color: #ffffff;
+    color: #0B63D8;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.25s ease;
+}
+
+.khd-save-btn:hover {
+    background-color: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.khd-main-wrapper {
+    display: flex;
+    gap: 24px;
+}
+
+.khd-controls-column {
+    flex: 1;
+    min-width: 450px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.khd-preview-column {
+    flex: 1.2;
+    background: #f1f5f9;
+    border-radius: 16px;
+    border: 2px dashed #cbd5e1;
+    position: sticky;
+    top: 50px;
+    height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+}
+
+.khd-preview-header {
+    background: #e2e8f0;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.khd-preview-title {
+    font-weight: bold;
+    font-size: 13px;
+    color: #475569;
+}
+
+.khd-preview-iframe {
+    width: 100%;
+    flex: 1;
+    border: none;
+    background: #fff;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+}
+
+/* Tabs & Settings styling */
+.khd-tabs-nav {
+    display: flex;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    overflow-x: auto;
+}
+
+.khd-tab-btn {
+    padding: 16px 20px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: bold;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.khd-tab-btn:hover {
+    color: #0b63d8;
+    background-color: #f1f5f9;
+}
+
+.khd-tab-btn.active {
+    color: #0b63d8;
+    border-bottom-color: #0b63d8;
+    background-color: #ffffff;
+}
+
+.khd-tab-content {
+    padding: 24px;
+    display: none;
+}
+
+.khd-tab-content.active {
+    display: block;
+}
+
+/* Form inputs styling */
+.khd-field-row {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.khd-field-row label {
+    font-weight: bold;
+    font-size: 13px;
+    color: #334155;
+}
+
+.khd-field-row input[type="text"],
+.khd-field-row select,
+.khd-field-row textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.khd-field-row input:focus,
+.khd-field-row select:focus {
+    border-color: #0B63D8;
+}
+
+.khd-field-row-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.khd-field-row-row > div {
+    flex: 1;
+}
+
+/* Responsive Device Controls wrapper */
+.khd-responsive-group {
+    background: #f8fafc;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 15px;
+}
+
+.khd-responsive-group-title {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #0F172A;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Drag-n-drop sorting item box */
+.khd-sortable-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.khd-sortable-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: move;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    transition: all 0.25s ease;
+}
+
+.khd-sortable-item:hover {
+    border-color: #0b63d8;
+    background: #f0f7fc;
+}
+
+.khd-sortable-handle {
+    color: #94a3b8;
+    margin-left: 10px;
+}
+
+.khd-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.khd-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.khd-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #cbd5e1;
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.khd-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .khd-toggle-slider {
+    background-color: #0B63D8;
+}
+
+input:checked + .khd-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.khd-preset-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
