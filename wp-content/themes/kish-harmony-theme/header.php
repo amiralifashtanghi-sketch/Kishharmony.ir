@@ -5,30 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php wp_title('|', true, 'right'); ?></title>
 
-    <!-- Tailwind CSS CDN Engine -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Vazirmatn', 'sans-serif'],
-            },
-            colors: {
-              brand: {
-                blue: '#0B63D8',
-                cyan: '#18D6D8',
-                orange: '#FF8A00',
-                dark: '#071E3D',
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <!-- FontAwesome & Font Definitions -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <?php wp_head(); ?>
 
@@ -36,10 +13,9 @@
     $has_designer = class_exists('\KishHarmonyDesigner\Helpers');
     $settings = $has_designer ? \KishHarmonyDesigner\Helpers::get_settings() : array();
     $hdr = $settings['header'] ?? array();
+    $hero_banner = $settings['hero_banner'] ?? array();
     $logo_url = !empty($hdr['custom_logo']) ? $hdr['custom_logo'] : '';
-    $menu_id = !empty($hdr['menu_id']) ? intval($hdr['menu_id']) : 0;
-    $hamburger_on_desktop = !empty($hdr['hamburger_on_desktop']);
-    $anim_speed = !empty($hdr['animation_speed']) ? $hdr['animation_speed'] : '300ms';
+    $brand_title = !empty($hero_banner['title_text']) ? $hero_banner['title_text'] : 'برند شما';
     ?>
 
     <style>
@@ -59,7 +35,6 @@
             min-height: 200vh;
         }
 
-        /* User's Exact Glassy Header CSS Spec */
         .header {
             position: fixed;
             top: 0;
@@ -77,20 +52,20 @@
             box-shadow: none;
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
-            transition: all <?php echo esc_attr($anim_speed); ?> cubic-bezier(0.45, 0, 0.55, 1.0);
+            transition: all <?php echo esc_attr(!empty($hdr['animation_speed']) ? $hdr['animation_speed'] : '0.8s'); ?> cubic-bezier(0.45, 0, 0.55, 1.0);
         }
 
         .header.scrolled {
             background: rgba(255, 255, 255, 0.18) !important;
             backdrop-filter: blur(28px) saturate(200%) !important;
             -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
-            border-radius: <?php echo esc_attr($hdr['border_radius'] ?? '50px'); ?> !important;
+            border-radius: <?php echo esc_attr(!empty($hdr['border_radius']) ? $hdr['border_radius'] : '50px'); ?> !important;
             top: 14px !important;
             left: 3% !important;
             width: 94% !important;
             height: 58px !important;
             padding: 0 2.2rem !important;
-            border: 1px solid <?php echo esc_attr($hdr['border_color'] ?? 'rgba(255, 255, 255, 0.35)'); ?> !important;
+            border: 1px solid <?php echo esc_attr(!empty($hdr['border_color']) ? $hdr['border_color'] : 'rgba(255, 255, 255, 0.35)'); ?> !important;
             box-shadow:
                 0 20px 40px -12px rgba(0, 0, 0, 0.15),
                 0 4px 12px rgba(0, 0, 0, 0.08),
@@ -102,14 +77,10 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            background-color: <?php echo esc_attr($hdr['bg_left'] ?? 'transparent'); ?>;
-            border-radius: 8px;
         }
 
         .header__center {
             flex: 1;
-            background-color: <?php echo esc_attr($hdr['bg_center'] ?? 'transparent'); ?>;
-            border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -121,8 +92,6 @@
             justify-content: flex-end;
             align-items: center;
             gap: 1rem;
-            background-color: <?php echo esc_attr($hdr['bg_right'] ?? 'transparent'); ?>;
-            border-radius: 8px;
         }
 
         .hamburger {
@@ -173,7 +142,7 @@
             color: #1a1a1a;
         }
 
-        /* Floating Logo Styles */
+        /* Floating Logo CSS */
         .floating-logo {
             position: fixed;
             z-index: 2000;
@@ -208,35 +177,58 @@
             font-size: 2.2rem;
         }
 
-        /* Fallbacks */
-        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #18D6D8; border-radius: 10px; }
+        @media screen and (max-width: 768px) {
+            .header {
+                height: 62px;
+                padding: 0 1rem;
+            }
+            .header.scrolled {
+                border-radius: 35px !important;
+                top: 8px !important;
+                left: 2% !important;
+                width: 96% !important;
+                height: 52px !important;
+                padding: 0 1.5rem !important;
+            }
+            .logo-icon {
+                width: 46px;
+                height: 46px;
+                font-size: 1.4rem;
+            }
+            .logo-text {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .header.scrolled {
+                border-radius: 28px !important;
+                top: 6px !important;
+            }
+            .logo-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1.1rem;
+                border-radius: 12px;
+            }
+            .logo-text {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
-<body <?php body_class('bg-white font-sans text-slate-800 antialiased selection:bg-[#18D6D8] selection:text-slate-900'); ?>>
+<body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
 <?php if (is_front_page() || is_home()) : ?>
-    <!-- ========================================== -->
-    <!-- 1. FIRST PAGE HEADER (Floating/Glassy)      -->
-    <!-- ========================================== -->
+    <!-- User Exact Home Glassy Header -->
     <header class="header" id="header">
         <div class="header__left">
-            <button class="hamburger" aria-label="منو" id="mobile-menu-btn" style="display: <?php echo ($hamburger_on_desktop || $menu_id == 0) ? 'flex' : 'none'; ?>;">
+            <button class="hamburger" aria-label="منو" id="mobile-menu-btn">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <?php if (!$hamburger_on_desktop && $menu_id > 0) : ?>
-                <?php wp_nav_menu(array(
-                    'menu' => $menu_id,
-                    'container' => 'nav',
-                    'container_class' => 'header-nav-menu-container hidden md:block',
-                    'menu_class' => 'header-nav-menu flex gap-6 text-sm font-bold text-slate-700',
-                    'depth' => 1
-                )); ?>
-            <?php endif; ?>
         </div>
         <div class="header__center"></div>
         <div class="header__right">
@@ -256,35 +248,25 @@
         </div>
     </header>
 
+    <!-- Only ONE Floating Logo on Home Page -->
     <a href="<?php echo esc_url(home_url('/')); ?>" class="floating-logo" id="floatingLogo">
         <?php if (!empty($logo_url)) : ?>
-            <img src="<?php echo esc_url($logo_url); ?>" alt="لوگو" style="max-height: 56px; object-fit: contain; border-radius: 12px;" class="logo-image-file">
+            <img src="<?php echo esc_url($logo_url); ?>" alt="لوگو" style="max-height: 56px; object-fit: contain;" class="logo-image-file">
         <?php else : ?>
             <span class="logo-icon">✦</span>
-            <span class="logo-text"><?php echo esc_html(!empty($settings['hero_banner']['lang_switcher_text']) ? 'کیش هارمونی' : 'کیش هارمونی'); ?></span>
+            <span class="logo-text"><?php echo esc_html($brand_title); ?></span>
         <?php endif; ?>
     </a>
 
 <?php else : ?>
-    <!-- ========================================== -->
-    <!-- 2. INNER PAGES HEADER (Static/Central Logo)-->
-    <!-- ========================================== -->
+    <!-- Inner Pages Static Header -->
     <header class="header scrolled" id="header" style="position: sticky; top: 14px; margin-bottom: 30px;">
         <div class="header__left">
-            <button class="hamburger" aria-label="منو" id="mobile-menu-btn" style="display: <?php echo ($hamburger_on_desktop || $menu_id == 0) ? 'flex' : 'none'; ?>;">
+            <button class="hamburger" aria-label="منو" id="mobile-menu-btn">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <?php if (!$hamburger_on_desktop && $menu_id > 0) : ?>
-                <?php wp_nav_menu(array(
-                    'menu' => $menu_id,
-                    'container' => 'nav',
-                    'container_class' => 'header-nav-menu-container hidden md:block',
-                    'menu_class' => 'header-nav-menu flex gap-6 text-sm font-bold text-slate-700',
-                    'depth' => 1
-                )); ?>
-            <?php endif; ?>
         </div>
         <div class="header__center">
             <a href="<?php echo esc_url(home_url('/')); ?>" class="header-logo" style="display: flex; align-items: center; gap: 0.6rem; color: #1e1e2f; text-decoration: none;">
@@ -292,7 +274,7 @@
                     <img src="<?php echo esc_url($logo_url); ?>" alt="لوگو" style="max-height: 40px; object-fit: contain;">
                 <?php else : ?>
                     <span class="logo-icon" style="display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); border-radius: 12px; width: 36px; height: 36px; font-size: 1.1rem;">✦</span>
-                    <span class="logo-text" style="font-weight: 800; font-size: 1.3rem;">کیش هارمونی</span>
+                    <span class="logo-text" style="font-weight: 800; font-size: 1.3rem;"><?php echo esc_html($brand_title); ?></span>
                 <?php endif; ?>
             </a>
         </div>
@@ -314,5 +296,4 @@
     </header>
 <?php endif; ?>
 
-<!-- React Root Container - Mounted automatically by app-bundle.js -->
 <div id="root">

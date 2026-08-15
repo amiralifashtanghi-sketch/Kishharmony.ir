@@ -39,19 +39,7 @@ function kish_harmony_scripts() {
     // Main Theme Compiled Style
     wp_enqueue_style('kish-harmony-style', get_stylesheet_uri(), array(), '1.0.0');
 
-    // React Bundle Script (with ES Module support)
-    wp_enqueue_script('kish-harmony-app', get_template_directory_uri() . '/assets/js/app-bundle.js', array(), '1.0.0', true);
-
-    // Interactive fallback script
+    // Interactive main theme script
     wp_enqueue_script('kish-harmony-main', get_template_directory_uri() . '/assets/js/main.js', array(), '1.0.0', true);
 }
 add_action('wp_enqueue_scripts', 'kish_harmony_scripts');
-
-// Inject type="module" for Vite ES Module bundles in WordPress
-function kish_harmony_script_type_module($tag, $handle, $src) {
-    if ('kish-harmony-app' === $handle || 'kish-harmony-main' === $handle) {
-        return '<script type="module" src="' . esc_url($src) . '"></script>' . "\n";
-    }
-    return $tag;
-}
-add_filter('script_loader_tag', 'kish_harmony_script_type_module', 10, 3);
