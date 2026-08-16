@@ -61,3 +61,24 @@ if (!defined('ABSPATH')) exit;
         </div>
     </div>
 </footer>
+
+<!-- Booking Modal Overlay -->
+<div id="booking-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[4000] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl relative">
+        <button id="close-modal-btn" class="absolute top-4 left-4 text-slate-400 hover:text-slate-800 text-2xl">&times;</button>
+        <h3 class="text-xl font-black text-[#071E3D] mb-4">فرم ثبت رزرو آنلاین</h3>
+        <form id="reservation-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">نام و نام خانوادگی</label>
+                <input type="text" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">شماره تماس</label>
+                <input type="tel" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm" placeholder="۰۹۱۲۰۰۰۰۰۰۰">
+            </div>
+            <button type="submit" class="w-full bg-[#0B63D8] text-white py-3 rounded-xl font-bold text-sm shadow-md">
+                تایید و ادامه
+            </button>
+        </form>
+    </div>
+</div>
