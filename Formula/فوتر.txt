@@ -1,0 +1,460 @@
+### راهنمای جامع و فنی طراحی فوتر "جزیره‌ی آبی"
+
+#### 0. خلاصه طراحی و هویت بصری
+این فوتر بر پایه حس **آرامش یک جزیره** و **اعتماد یک برند مدرن** طراحی شده است. برخلاف فوترهای شلوغ، اینجا "خلوت بودن" اصل است. کل ساختار از **فقط دو رنگ اصلی** تشکیل شده که با یک موج ارگانیک و زنده از هم جدا شده‌اند. خبری از انیمیشن‌های ورود حین اسکرول نیست (طبق درخواست شما) و تمام عناصر از ابتدا در جای خود قرار دارند، اما امواج با حرکت بی‌وقفه، حس پویایی و زندگی را منتقل می‌کنند.
+
+---
+
+#### 1. پالت رنگی (The Palette)
+تمام رنگ‌ها به‌صورت Custom Properties تعریف می‌شوند. از این رنگ‌ها به‌هیچ‌وجه خارج نشوید.
+
+| نام متغیر | کاربرد اصلی | کد HEX | توضیحات بصری |
+| :--- | :--- | :--- | :--- |
+| `--turquoise` | **پس‌زمینه لوگو** | `#18D6D8` | رنگ فیروزه‌ای اصلی. ۳۰٪ فضای فوتر را در بالا اشغال می‌کند. حس دریا و سرزندگی. |
+| `--deep-blue` | **پس‌زمینه محتوا** | `#0B63D8` | آبی پررنگ. ۶۰٪ فضا را در پایین دارد. حس اعتماد، ثبات و عمق. |
+| `--accent-orange`| **دکمه‌ها و لینک ویژه** | `#FF8A00` | رنگ نارنجی تأکیدی. فقط برای دکمه CTA و لینک "پیشنهاد ویژه" استفاده می‌شود. |
+| `--purple` | **نشان VIP (۱۰٪)** | `#6C3FBF` | برای تگ "پشتیبانی VIP" و یکی از ذرات پس‌زمینه. حس لوکس بودن. |
+| `--white` | **موج بالایی و متن** | `#ffffff` | موج بالایی که روی فیروزه‌ای می‌نشیند، کاملاً سفید است تا با بک‌گراند صفحه یکی شود. |
+
+---
+
+#### 2. تایپوگرافی (Typography)
+فونت اصلی **Vazirmatn** از گوگل فونتز (وزن‌های ۳۰۰ تا ۸۰۰). فونت‌های پشتیبان: `IRANSans`, `Segoe UI`, `Tahoma`.
+
+- **لوگو (نام برند):** وزن `800` (ExtraBold)، سایز `2rem`. رنگ: آبی پررنگ (`#0B63D8`).
+- **لوگو (شعار):** وزن `500`، سایز `0.85rem`. رنگ: آبی پررنگ با شفافیت ۰.۸.
+- **تیتر ستون‌ها:** وزن `700`، سایز `1rem`. رنگ: سفید. یک خط زیرین فیروزه‌ای به طول ۲۴px دارد که در هاور به ۴۰px و نارنجی تغییر می‌کند.
+- **لینک‌ها:** وزن معمولی، سایز `0.85rem`. رنگ: سفید با شفافیت ۶۵٪. در هاور کاملاً سفید و ۴px به چپ شیفت می‌خورند.
+
+---
+
+#### 3. ساختار کلی HTML (The Skeleton)
+ساختار از بالا به پایین کاملاً تخت و منطقی است:
+
+1.  **`.footer-wrapper`**: ظرف اصلی با پس‌زمینه فیروزه‌ای.
+2.  **`.footer-top-wave`**: اولین موج (سفید). این موج با `transform: scale(1, -1)` وارونه شده تا سر موج رو به بالا باشد.
+3.  **`.logo-strip`**: یک flexbox ساده که لوگو (آیکن + متن) را در مرکز نگه می‌دارد.
+4.  **`.middle-wave`**: دومین موج (آبی پررنگ). جداکننده اصلی بین بخش لوگو و محتوا.
+5.  **`.main-content`**: ظرف با پس‌زمینه آبی پررنگ که سه بخش اصلی را شامل می‌شود:
+    - **`.glow-line`**: خط نوری نازک بالای محتوا.
+    - **`.particles`**: ذرات شناور پس‌زمینه.
+    - **`.footer-inner`**: شبکه (Grid) اصلی محتوا.
+        - **`.link-group`**: یک زیر-شبکه با دو ستون مساوی (`1fr 1fr`) برای "دسترسی سریع" و "پشتیبانی".
+        - **ستون تماس**: شامل آدرس، تلفن، ایمیل، دکمه CTA و آیکن‌های شبکه اجتماعی.
+    - **`.footer-bottom`**: نوار کپی‌رایت.
+
+---
+
+#### 4. استایل‌دهی و جزئیات بصری (CSS Styling)
+
+- **لوگو:** آیکن (۳.۲rem) دارای سایه‌ای عمیق (`drop-shadow`) است و در هاور ۸٪ بزرگ شده و ۴ درجه می‌چرخد.
+- **لینک‌ها و دکمه‌ها:**
+    - **لینک ویژه ("پیشنهاد ویژه"):** رنگ نارنجی و وزن ۶۰۰.
+    - **نشان VIP:** پس‌زمینه بنفش نیمه‌شفاف، حاشیه بنفش، و یک دایره کوچک که با انیمیشن `pulseDot` ضربان دارد.
+    - **دکمه CTA (مشاوره رایگان):** پس‌زمینه نارنجی، گوشه‌های کاملاً گرد (`28px`)، سایه نارنجی. در هاور رنگش روشن‌تر شده و ۳px بالا می‌پرد.
+- **آیکن‌های اجتماعی:** دایره‌هایی با پس‌زمینه سفید نیمه‌شفاف. در هاور پس‌زمینه فیروزه‌ای و آیکن آبی پررنگ می‌شود.
+
+---
+
+#### 5. شاه‌کار طراحی: امواج متحرک (The Waves) – **جزئیات حیاتی**
+
+این بخش مهم‌ترین قسمت طراحی است. ما دو موج داریم که هر دو با ریاضیات یکسان و کاملاً هم‌جهت حرکت می‌کنند.
+
+**فلسفه طراحی:** موج‌ها به‌هیچ‌وجه نباید خط صاف شوند. برای این کار، به‌جای یک قله، از **۴ قله و دره** در عرض Viewport استفاده شده است. هر موج از یک مسیر منحنی Bézier (با دستور `C` در SVG) تشکیل شده که نقاط کنترل آن مدام در حال تغییرند.
+
+**الف) موج بالایی (فیروزه‌ای/سفید):**
+- **رنگ:** سفید (`#ffffff`).
+- **موقعیت:** بالای نوار لوگو.
+- **جهت:** با `transform="scale(1, -1) translate(0, -80)"` به صورت عمودی برعکس شده تا نوک قله‌ها به سمت **بالا** باشد.
+- **مسیر اصلی (`d`):**
+    `M0,35 C80,10 160,65 240,35 ... L1440,80 L0,80 Z`
+    این مسیر از ۶ قطعه (segment) تشکیل شده که هر کدام یک قله یا دره را می‌سازند. عرض هر قطعه ۲۴۰px است.
+- **انیمیشن (`<animate>`):**
+    - **مدت:** ۴ ثانیه (`dur="4s"`).
+    - **تکرار:** بی‌نهایت (`repeatCount="indefinite"`).
+    - **فریم‌های کلیدی (`values`):** ۴ مسیر مختلف تعریف شده که نقاط کنترل (`C`) در آن‌ها جابه‌جا می‌شوند.
+        - **فریم ۱ (پایه):** نقاط Y بین 0 تا 70 در نوسانند.
+        - **فریم ۲:** نقاط Y کمی بالاتر رفته، اما نقاط x هم جابه‌جا شده‌اند.
+        - **فریم ۳:** نقاط Y کمی پایین‌تر رفته‌اند.
+        - **فریم ۴:** دقیقاً برابر فریم ۱ است تا لوپ انیمیشن بدون پرش بسته شود.
+    - **نتیجه:** موج مدام شکل خود را عوض می‌کند، اما نقطه شروع (`M0,35`) و پایان (`L1440,80`) ثابت است تا به بدنه اصلی بچسبد. **به دلیل استفاده از ۴ قله، طول هر قطعه کم است و موج هرگز به خط صاف نزدیک نمی‌شود.**
+
+**ب) موج میانی (آبی پررنگ):**
+- **رنگ:** آبی پررنگ (`#0B63D8`).
+- **موقعیت:** بین نوار لوگو و محتوای آبی.
+- **جهت:** معمولی، سر موج رو به پایین.
+- **مسیر و انیمیشن:** **دقیقاً همان مسیر ریاضی و زمان‌بندی فریم‌های موج بالایی** را دارد. این کار باعث می‌شود دو موج کاملاً هم‌جهت و هماهنگ به نظر برسند، انگار که یک موج واحد از میان فوتر عبور کرده است.
+
+---
+
+#### 6. افکت‌های ویژه (Particles & Glow)
+
+- **ذرات شناور (`.particle`):** ۴ دایره بزرگ (۸۰ تا ۱۷۰px) با شفافیت بسیار کم (۰.۰۲ تا ۰.۰۵) در پس‌زمینه آبی تیره. هر کدام با انیمیشن `floatUp` به مدت ۱۳ ثانیه از پایین به بالا حرکت کرده، بزرگ شده و محو می‌شوند. این کار حس عمق و حرکت ملایمی شبیه حباب‌های زیر آب می‌دهد.
+- **خط نوری (`.glow-line`):** یک خط به عرض ۱px با گرادیان افقی. انیمیشن `shimmer` عرض و شفافیت آن را کم و زیاد می‌کند و حس یک اسکنر نورانی را القا می‌کند.
+
+---
+
+#### 7. واکنش‌گرایی (Responsive Details)
+
+- **در تبلت (max-width: 768px):** شبکه اصلی از ۲ ستون به ۱ ستون تغییر می‌کند. گروه لینک‌ها (`link-group`) **همچنان ۲ ستونه باقی می‌ماند**. نوار پایینی به حالت ستونی درمی‌آید.
+- **در موبایل (max-width: 400px):** گروه لینک‌ها **همچنان ۲ ستونه** می‌ماند (این درخواست موکد شما بود) و برای خوانایی بهتر، فاصله ستون‌ها و سایز فونت‌ها کمی کاهش می‌یابد. این کار با قانون `grid-template-columns: 1fr 1fr` در `link-group` قفل شده است.
+
+---
+
+#### 8. کد کامل نهایی (همراه با مستندات درون کد)
+
+```html
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فوتر جزیره‌ی آبی | طراحی اختصاصی</title>
+
+    <style>
+        /* ==========================================================================
+           متغیرهای سراسری طراحی (Design Tokens)
+           ========================================================================== */
+        :root {
+            --turquoise: #18D6D8;      /* فیروزه‌ای اصلی - پس‌زمینه بالایی */
+            --light-blue: #AEEBFF;     /* آبی روشن - برای آیکن‌های شبکه اجتماعی */
+            --deep-blue: #0B63D8;      /* آبی پررنگ - پس‌زمینه پایینی و موج میانی */
+            --accent-orange: #FF8A00;  /* نارنجی تأکیدی - دکمه‌ها و لینک ویژه */
+            --purple: #6C3FBF;         /* بنفش - نشان VIP */
+            --white: #ffffff;
+            --white-muted: rgba(255, 255, 255, 0.65);  /* متن غیرفعال */
+            --white-glow: rgba(255, 255, 255, 0.08);   /* پس‌زمینه آیکن‌ها */
+            --font: 'Vazirmatn', 'IRANSans', sans-serif;
+        }
+
+        /* ریست پایه */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: #ffffff;         /* بک‌گراند صفحه سفید خالص */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+
+        /* فضای اسکرول برای تست */
+        .scroll-spacer {
+            height: 70vh; display: flex; align-items: center; justify-content: center;
+            color: #9aa9b9; font-size: 1.1rem; opacity: 0.7; flex-shrink: 0;
+        }
+
+        /* ==========================================================================
+           بخش اصلی فوتر (Footer Wrapper)
+           ========================================================================== */
+        .footer-wrapper {
+            background: var(--turquoise);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        /* --------------------------------------------------------------------------
+           موج بالایی (فیروزه‌ای -> سفید) - سر موج رو به بالا
+           -------------------------------------------------------------------------- */
+        .footer-top-wave {
+            width: 100%; height: 70px; position: relative; z-index: 2;
+            margin-bottom: -15px; pointer-events: none;
+        }
+        .footer-top-wave svg { width: 100%; height: 100%; display: block; }
+        .footer-top-wave .wave-fill { fill: #ffffff; }
+
+        /* --------------------------------------------------------------------------
+           نوار لوگو (تنها و متمایز)
+           -------------------------------------------------------------------------- */
+        .logo-strip {
+            padding: 10px 24px 35px 24px; display: flex; justify-content: center;
+            align-items: center; position: relative; z-index: 1;
+        }
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--deep-blue); }
+        .logo-icon {
+            font-size: 3.2rem; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.2));
+            transition: transform 0.3s;
+        }
+        .logo-link:hover .logo-icon { transform: scale(1.08) rotate(-4deg); }
+        .logo-text { display: flex; flex-direction: column; gap: 2px; }
+        .logo-name { font-size: 2rem; font-weight: 800; line-height: 1.2; color: var(--deep-blue); }
+        .logo-tagline { font-size: 0.85rem; font-weight: 500; color: var(--deep-blue); opacity: 0.8; }
+
+        /* --------------------------------------------------------------------------
+           موج میانی (آبی پررنگ) - جداکننده اصلی
+           -------------------------------------------------------------------------- */
+        .middle-wave {
+            width: 100%; height: 70px; margin-bottom: -5px; position: relative;
+            z-index: 2; pointer-events: none;
+        }
+        .middle-wave svg { width: 100%; height: 100%; display: block; }
+        .middle-wave .wave-deep { fill: var(--deep-blue); }
+
+        /* --------------------------------------------------------------------------
+           بدنه اصلی محتوا (آبی پررنگ)
+           -------------------------------------------------------------------------- */
+        .main-content {
+            background: var(--deep-blue); color: white; position: relative;
+            isolation: isolate; overflow: hidden; padding: 10px 0 0 0;
+        }
+
+        /* ذرات پس‌زمینه */
+        .particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+        .particle {
+            position: absolute; border-radius: 50%; background: var(--turquoise);
+            opacity: 0.04; animation: floatUp 13s infinite ease-in-out;
+        }
+        .p1 { width: 150px; height: 150px; bottom: -70px; left: 8%; }
+        .p2 { width: 100px; height: 100px; bottom: -50px; left: 32%; background: var(--purple); animation-delay: 3s; opacity: 0.03; }
+        .p3 { width: 170px; height: 170px; bottom: -85px; right: 6%; background: var(--light-blue); animation-delay: 6s; opacity: 0.03; }
+        .p4 { width: 80px; height: 80px; bottom: -40px; right: 28%; animation-delay: 2s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 0.02; }
+            50% { transform: translateY(-250px) scale(1.5); opacity: 0.05; }
+            100% { transform: translateY(-550px) scale(2.2); opacity: 0; }
+        }
+
+        /* خط نوری بالای محتوا */
+        .glow-line {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 65%; height: 1px; z-index: 3;
+            background: linear-gradient(90deg, transparent, var(--turquoise), white, var(--turquoise), transparent);
+            opacity: 0.4; animation: shimmer 4s infinite;
+        }
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.2; width: 55%; }
+            50% { opacity: 0.8; width: 70%; }
+        }
+
+        /* شبکه اصلی محتوا */
+        .footer-inner {
+            position: relative; z-index: 1; max-width: 1100px; margin: 0 auto;
+            padding: 25px 24px 10px 24px; display: grid;
+            grid-template-columns: 1fr 1fr; gap: 30px;
+        }
+        /* زیر-شبکه برای دسترسی و پشتیبانی (همیشه کنار هم) */
+        .link-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .col-title {
+            font-size: 1rem; font-weight: 700; color: white; margin-bottom: 14px;
+            position: relative; display: inline-block;
+        }
+        .col-title::after {
+            content: ''; position: absolute; bottom: -5px; right: 0; width: 24px;
+            height: 3px; border-radius: 4px; background: var(--turquoise); transition: width 0.3s;
+        }
+        .col-title:hover::after { width: 40px; background: var(--accent-orange); }
+
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+        .footer-link {
+            color: var(--white-muted); text-decoration: none; font-size: 0.85rem;
+            transition: color 0.2s, transform 0.2s; display: inline-flex; align-items: center;
+            gap: 5px; width: fit-content;
+        }
+        .footer-link:hover { color: white; transform: translateX(-4px); }
+        .highlight { color: var(--accent-orange); font-weight: 600; }
+
+        /* نشان VIP */
+        .badge {
+            display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;
+            background: rgba(108, 63, 191, 0.2); border: 1px solid rgba(108, 63, 191, 0.4);
+            color: #c9b8f0; font-size: 0.7rem; font-weight: 600; padding: 3px 9px;
+            border-radius: 20px;
+        }
+        .badge-dot {
+            width: 7px; height: 7px; border-radius: 50%; background: #b794f4;
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(183,148,244,0.7); }
+            50% { box-shadow: 0 0 0 8px rgba(183,148,244,0); }
+        }
+
+        /* ستون تماس */
+        .contact-item { display: flex; gap: 10px; margin-bottom: 12px; font-size: 0.85rem; color: var(--white-muted); }
+        .contact-icon {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--white-glow);
+            display: flex; align-items: center; justify-content: center; color: var(--turquoise);
+            flex-shrink: 0;
+        }
+        .cta-button {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--accent-orange); color: white; text-decoration: none;
+            font-weight: 700; font-size: 0.85rem; padding: 10px 20px; border-radius: 28px;
+            box-shadow: 0 6px 20px rgba(255,138,0,0.3); margin-top: 8px; transition: 0.3s;
+        }
+        .cta-button:hover { background: #ff9d22; transform: translateY(-3px); box-shadow: 0 12px 28px rgba(255,138,0,0.45); }
+
+        .socials { display: flex; gap: 8px; margin-top: 16px; }
+        .social-link {
+            width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--light-blue); text-decoration: none; transition: 0.3s;
+        }
+        .social-link:hover { background: var(--turquoise); color: var(--deep-blue); transform: translateY(-3px); }
+
+        /* نوار کپی‌رایت */
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1); margin-top: 35px; padding: 16px 24px;
+            display: flex; justify-content: space-between; flex-wrap: wrap;
+            font-size: 0.75rem; color: var(--white-muted); background: rgba(0,0,0,0.15);
+        }
+        .bottom-links { display: flex; gap: 16px; list-style: none; }
+        .bottom-links a { color: inherit; text-decoration: none; transition: color 0.2s; }
+        .bottom-links a:hover { color: var(--turquoise); }
+        .heart { color: #ff5e7a; animation: beat 1.2s infinite; display: inline-block; }
+        @keyframes beat {
+            0%,100%{ transform: scale(1); } 15%{ transform: scale(1.25); }
+            30%{ transform: scale(1); } 45%{ transform: scale(1.2); } 60%{ transform: scale(1); }
+        }
+
+        /* واکنش‌گرایی */
+        @media (max-width: 768px) {
+            .footer-inner { grid-template-columns: 1fr; }
+            .link-group { grid-template-columns: 1fr 1fr; } /* همچنان کنار هم */
+            .footer-bottom { flex-direction: column; text-align: center; gap: 8px; }
+        }
+        @media (max-width: 400px) {
+            .link-group { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .footer-link { font-size: 0.75rem; }
+        }
+    </style>
+
+    <!-- فونت وزیرمتن -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="scroll-spacer">⬇️ برای دیدن فوتر اسکرول کنید ⬇️</div>
+
+    <div class="footer-wrapper">
+
+        <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  موج بالایی (سفید، سر موج رو به بالا)              ║
+        ║  مهم: transform="scale(1, -1)" موج را وارونه می‌کند ║
+        ╚══════════════════════════════════════════════════════╝
+        -->
+        <div class="footer-top-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- مسیر با ۴ قله متراکم -->
+                <path class="wave-fill" transform="scale(1, -1) translate(0, -80)" 
+                      d="M0,35 C80,10 160,65 240,35 C320,5 400,60 480,35 C560,10 640,70 720,35 C800,0 880,60 960,35 C1040,10 1120,65 1200,35 C1280,5 1360,55 1440,35 L1440,80 L0,80 Z">
+                    <animate attributeName="d" dur="4s" repeatCount="indefinite" values="
+                        M0,35 C80,10 160,65 240,35 C320,5 400,60 480,35 C560,10 640,70 720,35 C800,0 880,60 960,35 C1040,10 1120,65 1200,35 C1280,5 1360,55 1440,35 L1440,80 L0,80 Z;
+                        M0,45 C90,20 170,70 250,45 C330,20 410,65 490,40 C570,15 650,60 730,45 C810,30 890,55 970,40 C1050,25 1130,60 1210,45 C1290,30 1370,50 1440,45 L1440,80 L0,80 Z;
+                        M0,25 C70,0 150,55 230,25 C310,-5 390,50 470,25 C550,0 630,55 710,25 C790,-5 870,50 950,25 C1030,0 1110,55 1190,25 C1270,-5 1350,45 1440,25 L1440,80 L0,80 Z;
+                        M0,35 C80,10 160,65 240,35 C320,5 400,60 480,35 C560,10 640,70 720,35 C800,0 880,60 960,35 C1040,10 1120,65 1200,35 C1280,5 1360,55 1440,35 L1440,80 L0,80 Z
+                    " />
+                </path>
+            </svg>
+        </div>
+
+        <!-- نوار لوگو -->
+        <div class="logo-strip">
+            <a href="#" class="logo-link">
+                <span class="logo-icon">🏝️</span>
+                <div class="logo-text">
+                    <span class="logo-name">جزیره‌ی آبی</span>
+                    <span class="logo-tagline">Blue Island</span>
+                </div>
+            </a>
+        </div>
+
+        <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  موج میانی (آبی پررنگ) - کاملاً هم‌جهت با موج بالایی ║
+        ╚══════════════════════════════════════════════════════╝
+        -->
+        <div class="middle-wave" aria-hidden="true">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="wave-deep" 
+                      d="M0,35 C80,10 160,65 240,35 C320,5 400,60 480,35 C560,10 640,70 720,35 C800,0 880,60 960,35 C1040,10 1120,65 1200,35 C1280,5 1360,55 1440,35 L1440,80 L0,80 Z">
+                    <animate attributeName="d" dur="4s" repeatCount="indefinite" values="
+                        M0,35 C80,10 160,65 240,35 C320,5 400,60 480,35 C560,10 640,70 720,35 C800,0 880,60 960,35 C1040,10 1120,65 1200,35 C1280,5 1360,55 1440,35 L1440,80 L0,80 Z;
+                        M0,45 C90,20 170,70 250,45 C330,20 410,65 490,40 C570,15 650,60 730,45 C810,30 890,55 970,40 C1050,25 1130,60 1210,45 C1290,30 1370,50 1440,45 L1440,80 L0,80 Z;
+                        M0,25 C70,0 150,55 230,25 C310,-5 390,50 470,25 C550,0 630,55 710,25 C790,-5 870,50 950,25 C1030,0 1110,55 1190,25 C1270,-5 1350,45 1440,25 L1440,80 L0,80 Z;
+                        M0,35 C80,10 160,65 240,35 C320,5 400,60 480,35 C560,10 640,70 720,35 C800,0 880,60 960,35 C1040,10 1120,65 1200,35 C1280,5 1360,55 1440,35 L1440,80 L0,80 Z
+                    " />
+                </path>
+            </svg>
+        </div>
+
+        <!-- بدنه اصلی محتوا -->
+        <div class="main-content">
+            <div class="glow-line"></div>
+            <div class="particles">
+                <span class="particle p1"></span>
+                <span class="particle p2"></span>
+                <span class="particle p3"></span>
+                <span class="particle p4"></span>
+            </div>
+
+            <div class="footer-inner">
+                <div class="link-group">
+                    <!-- دسترسی سریع -->
+                    <div>
+                        <h4 class="col-title">دسترسی سریع</h4>
+                        <ul class="footer-links">
+                            <li><a href="#" class="footer-link">درباره ما</a></li>
+                            <li><a href="#" class="footer-link">خدمات ما</a></li>
+                            <li><a href="#" class="footer-link">نمونه کارها</a></li>
+                            <li><a href="#" class="footer-link">وبلاگ</a></li>
+                            <li><a href="#" class="footer-link highlight">پیشنهاد ویژه ✨</a></li>
+                        </ul>
+                    </div>
+                    <!-- پشتیبانی -->
+                    <div>
+                        <h4 class="col-title">پشتیبانی</h4>
+                        <ul class="footer-links">
+                            <li><a href="#" class="footer-link">مرکز راهنمایی</a></li>
+                            <li><a href="#" class="footer-link">سوالات متداول</a></li>
+                            <li><a href="#" class="footer-link">قوانین و مقررات</a></li>
+                            <li><a href="#" class="footer-link">حریم خصوصی</a></li>
+                            <li><span class="badge"><span class="badge-dot"></span> پشتیبانی VIP</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- تماس با ما -->
+                <div>
+                    <h4 class="col-title">تماس با ما</h4>
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <span>تهران، خیابان ولیعصر، پلاک ۴۲</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <span>۰۲۱ - ۱۲۳۴ ۵۶۷۸</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">✉️</span>
+                        <span>hello@blueisland.ir</span>
+                    </div>
+                    <a href="#" class="cta-button">مشاوره رایگان ←</a>
+                    <div class="socials">
+                        <a href="#" class="social-link">📷</a>
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">✈️</a>
+                        <a href="#" class="social-link">🔗</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>© ۱۴۰۴ جزیره‌ی آبی. تمامی حقوق محفوظ است.</span>
+                <ul class="bottom-links">
+                    <li><a href="#">نقشه سایت</a></li>
+                    <li><a href="#">کوکی‌ها</a></li>
+                    <li><a href="#">تنظیمات</a></li>
+                </ul>
+                <span>ساخته شده با <span class="heart">♥</span> در ایران</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+```

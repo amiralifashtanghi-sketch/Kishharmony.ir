@@ -1,0 +1,116 @@
+**مشخصات کامل دسته‌بندی های تفریحات 
+
+---
+
+### ساختار HTML
+- یک **container** با grid  
+- هر آیتم یک تگ `<a>` با کلاس `card-soft`  
+- داخل هر `<a>`:  
+  - یک `<i>` برای آیکون (Font Awesome)  
+  - یک `<div>` با کلاس `card-label` شامل متن دسته‌بندی  
+- چیدمان grid با کلاس `grid-soft` روی یک div والد  
+
+```html
+<div class="grid-soft">
+  <a href="#" class="card-soft">
+    <i class="fa-solid fa-ship"></i>
+    <div class="card-label">تور دریایی</div>
+  </a>
+  <!-- بقیه آیتم‌ها -->
+</div>
+```
+
+---
+
+### کانتینر اصلی (grid)
+- **display:** `grid`  
+- **grid-template-columns:** `repeat(auto-fill, minmax(140px, 1fr))`  
+- **gap:** `20px`  
+
+---
+
+### کارت (`.card-soft`)
+- **aspect-ratio:** `1 / 1` (مربع کامل)  
+- **border-radius:** `24px`  
+- **position:** `relative`  
+- **overflow:** `hidden`  
+- **display:** `flex`  
+- **align-items:** `flex-end` (برای چسباندن label به پایین)  
+- **cursor:** `pointer`  
+- **box-shadow:** `0 12px 28px rgba(0,0,0,0.08)`  
+- **transition:** `all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1)`  
+- **text-decoration:** `none`  
+- **background-size:** `cover`  
+- **background-position:** `center`  
+- **background-image:** برای نمونه از گرادینت‌های خطی استفاده شده (قابل جایگزینی با عکس واقعی با همان ویژگی‌های `background-size` و `background-position`).  
+  گرادینت‌های نمونه برای هر کارت با `nth-child`:
+  - 1: `linear-gradient(135deg, #43C6AC, #1b8a76)`
+  - 2: `linear-gradient(135deg, #F2994A, #d97a2b)`
+  - 3: `linear-gradient(135deg, #667eea, #4a56b6)`
+  - 4: `linear-gradient(135deg, #ee5a24, #c23a0c)`
+  - 5: `linear-gradient(135deg, #11998e, #0b6b61)`
+  - 6: `linear-gradient(135deg, #6a3093, #441f63)`
+  - 7: `linear-gradient(135deg, #00b4db, #0077a3)`
+
+---
+
+### شبه‌عنصر overlay (`.card-soft::before`)
+- **content:** `''`  
+- **position:** `absolute`  
+- **inset:** `0`  
+- **background:** `linear-gradient(0deg, rgba(0,0,0,0.6) 10%, rgba(0,0,0,0.1) 60%)`  
+  (تیره در پایین برای خوانایی متن، روشن در بالا)  
+- **transition:** `background 0.4s`  
+- **z-index:** به‌صورت پیش‌فرض پایین‌تر از آیکون و label (با قرارگیری مناسب در flow)  
+
+---
+
+### حالت هاور کارت (`.card-soft:hover`)
+- **transform:** `translateY(-8px) scale(1.02)` (بالا آمدن و بزرگ‌شدن جزئی)  
+- **box-shadow:** `0 25px 45px rgba(0,0,0,0.18)` (سایه عمیق‌تر)  
+- **::before** background به `linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 70%)` تغییر می‌کند (تاریک‌تر شدن overlay)  
+
+---
+
+### آیکون (`.card-soft i`)
+- **position:** `absolute`  
+- **top:** `20px`  
+- **left:** `50%`  
+- **transform:** `translateX(-50%)`  
+- **font-size:** `36px`  
+- **color:** `rgba(255,255,255,0.9)`  
+- **z-index:** `1` (باید بالای `::before` قرار گیرد)  
+- **filter:** `drop-shadow(0 4px 8px rgba(0,0,0,0.3))`  
+
+---
+
+### برچسب متن (`.card-label`)
+- **position:** `relative` (نه absolute، تا در flex به‌درستی قرار گیرد)  
+- **z-index:** `1`  
+- **color:** `white`  
+- **font-weight:** `700`  
+- **font-size:** `15px`  
+- **padding:** `14px 14px`  
+- **width:** `100%`  
+- **text-align:** `center`  
+- **text-shadow:** `0 2px 6px rgba(0,0,0,0.5)`  
+- **background:** `rgba(0,0,0,0.2)`  
+- **backdrop-filter:** `blur(2px)`  
+- **border-bottom-left-radius:** `24px`  
+- **border-bottom-right-radius:** `24px`  
+(گوشه‌های پایین با کارت هماهنگ باشد)  
+
+---
+
+### واکنش‌گرایی (Media Query)
+در عرض **max-width: 500px**:
+- `.grid-soft` به `grid-template-columns: repeat(2, 1fr)` تغییر می‌کند (۲ ستون)  
+
+---
+
+### نکات تکمیلی برای بازتولید دقیق
+1. **فونت**: از `'Segoe UI', Tahoma, sans-serif` با `body` استفاده شده.  
+2. **آیکون‌ها**: نیاز به Font Awesome 6.4.0 (کلاس‌های `fa-solid`).  
+3. **ریست CSS**: `* { margin:0; padding:0; box-sizing:border-box; }`  
+4. در صورت استفاده از عکس واقعی، گرادینت‌های `nth-child` را با `background-image: url(...)` جایگزین کنید و از `background-size: cover` و `background-position: center` مطمئن شوید.  
+5. ترتیب z-index: آیکون و label باید بالای `::before` باشند؛ با `position: relative` برای label و `absolute` برای آیکون تأمین می‌شود.

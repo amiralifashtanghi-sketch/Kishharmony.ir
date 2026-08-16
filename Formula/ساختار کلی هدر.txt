@@ -1,0 +1,508 @@
+# 📘 مستند طراحی و توسعه: هدر مرکزی با لوگوی ثابت  
+## نسخه صفحات داخلی (بدون بنر و لوگوی شناور)
+
+---
+
+## 🎯 ۱. هدف و کاربرد
+
+این هدر برای صفحات داخلی سایت (مانند صفحات خدمات، محصولات، وبلاگ، تماس با ما و …) طراحی شده است. ویژگی‌های اصلی:
+- **شفافیت اولیه:** در حالت عادی شفاف است و با پس‌زمینه صفحه ترکیب می‌شود.
+- **افکت شیشه‌ای در اسکرول:** پس از اسکرول، به حالت شیشه‌ای (blur + transparency) تغییر می‌کند و از لبه‌های صفحه فاصله می‌گیرد.
+- **لوگو همیشه در مرکز هدر** قرار دارد و بر خلاف نسخه صفحه اصلی، اندازه آن ثابت و کوچک است.
+- **دکمه همبرگر** در سمت راست (RTL) و **آیکون‌های سبد خرید و حساب کاربری** در سمت چپ.
+- **واکنش‌گرایی کامل** برای تبلت و موبایل.
+
+---
+
+## 🧱 ۲. ساختار HTML
+
+```html
+<header class="header" id="header">
+    <div class="header__left">
+        <button class="hamburger" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+    <div class="header__center">
+        <a href="#" class="header-logo">
+            <span class="logo-icon">✦</span>
+            <span class="logo-text">برند شما</span>
+        </a>
+    </div>
+    <div class="header__right">
+        <a href="#" class="header__icon" aria-label="سبد خرید">
+            <svg viewBox="0 0 24 24"> ... </svg>
+        </a>
+        <a href="#" class="header__icon" aria-label="حساب کاربری">
+            <svg viewBox="0 0 24 24"> ... </svg>
+        </a>
+    </div>
+</header>
+```
+
+- **`header`** : المان اصلی با کلاس `header` و id `header`.
+- **`header__left`** : ناحیه سمت راست (در RTL) شامل دکمه همبرگر.
+- **`header__center`** : ناحیه وسط، شامل لوگوی برند.
+- **`header__right`** : ناحیه سمت چپ، شامل دو لینک آیکون (سبد خرید و حساب کاربری).
+- **لوگو:** یک لینک با کلاس `header-logo` و دو `<span>` داخلی (آیکون و متن).
+
+---
+
+## 🎨 ۳. استایل‌های پایه و Reset
+
+```css
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f5f5f5; /* رنگ پیشنهادی پس‌زمینه (خاکستری روشن) */
+    color: #1e293b;
+    line-height: 1.5;
+    min-height: 200vh; /* صرفاً برای تست اسکرول */
+}
+```
+
+- **`box-sizing: border-box`** روی تمام عناصر اعمال می‌شود.
+- **فونت:** از فونت سیستمی استفاده می‌شود.
+- **پس‌زمینه بدن:** در این نمونه `#f5f5f5` (خاکستری بسیار روشن) تنظیم شده، اما می‌تواند هر رنگ دیگری باشد، چرا که هدر در حالت عادی شفاف است.
+- **`min-height: 200vh`** فقط برای اطمینان از وجود فضای اسکرول در حالت پیش‌نمایش است.
+
+---
+
+## 🧭 ۴. هدر (کلاس `header`) – حالت عادی (بدون اسکرول)
+
+```css
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.8rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition: all 0.8s cubic-bezier(0.45, 0, 0.55, 1.0);
+}
+```
+
+### مشخصات هر خاصیت:
+
+| ویژگی | مقدار | توضیح |
+|--------|--------|--------|
+| `position` | `fixed` | هدر همواره در بالای viewport ثابت می‌ماند. |
+| `top` | `0` | چسبیده به بالای صفحه. |
+| `left` | `0` | چسبیده به چپ (در RTL هم `left` کار می‌کند). |
+| `width` | `100%` | عرض کامل صفحه. |
+| `height` | `70px` | ارتفاع دقیق ۷۰ پیکسل. |
+| `z-index` | `1000` | اطمینان از قرارگیری روی محتوای صفحه. |
+| `display` | `flex` | فعال‌سازی flexbox. |
+| `align-items` | `center` | عمودی وسط. |
+| `justify-content` | `space-between` | توزیع فضای خالی بین سه ناحیه. |
+| `padding` | `0 1.8rem` | فاصله داخلی از چپ و راست ۱.۸rem. |
+| `background` | `transparent` | کاملاً شفاف. |
+| `border` | `1px solid transparent` | حاشیه نامرئی برای جلوگیری از پرش هنگام اسکرول. |
+| `border-radius` | `0` | بدون گردی. |
+| `box-shadow` | `none` | بدون سایه. |
+| `backdrop-filter` | `none` | بدون افکت مات‌کنندگی. |
+| `transition` | `all 0.8s cubic-bezier(0.45, 0, 0.55, 1.0)` | مدت انیمیشن ۰.۸ ثانیه با تابع شتاب‌دهی ملایم. |
+
+> **توجه:** `cubic-bezier(0.45, 0, 0.55, 1.0)` یک منحنی شتاب‌دهی ملایم است که شروع و پایان نرمی دارد.
+
+---
+
+## ✨ ۵. هدر در حالت اسکرول شده (کلاس `scrolled`)
+
+هنگامی که کاربر بیش از ۱۰px اسکرول کند، JavaScript کلاس `scrolled` را به هدر اضافه می‌کند.
+
+```css
+.header.scrolled {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border-radius: 50px;
+    top: 14px;
+    left: 3%;
+    width: 94%;
+    height: 58px;
+    padding: 0 2.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow:
+        0 20px 40px -12px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+```
+
+### تغییرات نسبت به حالت عادی:
+
+| ویژگی | مقدار | توضیح |
+|--------|--------|--------|
+| `background` | `rgba(255, 255, 255, 0.18)` | سفید با ۱۸٪ شفافیت (حالت شیشه‌ای). |
+| `backdrop-filter` | `blur(28px) saturate(200%)` | تاری ۲۸px و افزایش اشباع رنگ. |
+| `-webkit-backdrop-filter` | همان مقدار | پشتیبانی از Safari. |
+| `border-radius` | `50px` | گوشه‌های کاملاً گرد (کپسولی). |
+| `top` | `14px` | از بالای صفحه ۱۴px فاصله می‌گیرد (شناور می‌شود). |
+| `left` | `3%` | ۳٪ فاصله از چپ. |
+| `width` | `94%` | عرض ۹۴٪ (۶٪ جمعاً فاصله از طرفین). |
+| `height` | `58px` | ارتفاع ۵۸px (کمی فشرده‌تر). |
+| `padding` | `0 2.2rem` | فاصله داخلی بیشتر نسبت به حالت عادی. |
+| `border` | `1px solid rgba(255, 255, 255, 0.35)` | حاشیه سفید نیمه شفاف. |
+| `box-shadow` | سه لایه: | سایه بیرونی بزرگ (`0 20px 40px -12px rgba(0,0,0,0.15)`)، سایه بیرونی کوچک (`0 4px 12px rgba(0,0,0,0.08)`) و سایه داخلی روشن در لبه بالایی (`inset 0 1px 0 rgba(255,255,255,0.5)`). |
+
+- **انتقال:** همان `transition` تعریف شده در حالت عادی، این تغییرات را به‌آرامی اعمال می‌کند.
+
+---
+
+## 📐 ۶. چینش داخلی هدر (سه ناحیه)
+
+### ۶.۱. ناحیه چپ (`header__left`)
+```css
+.header__left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+```
+- `flex: 1` باعث می‌شود یک سوم فضای هدر را اشغال کند.
+- `justify-content: flex-start` محتوا را به لبه راست (در RTL) می‌چسباند.
+
+### ۶.۲. ناحیه وسط (`header__center`)
+```css
+.header__center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+```
+- `flex: 1` فضای مساوی با دو ناحیه دیگر.
+- `justify-content: center` و `align-items: center` محتوا (لوگو) را در مرکز دقیق ناحیه خود و در نتیجه مرکز کل هدر قرار می‌دهد.
+
+### ۶.۳. ناحیه راست (`header__right`)
+```css
+.header__right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+```
+- `justify-content: flex-end` محتوا را به لبه چپ (در RTL) می‌چسباند.
+- `gap: 1rem` بین دو آیکون فاصله ۱rem ایجاد می‌کند.
+
+---
+
+## 🍔 ۷. دکمه همبرگر (Hamburger Menu)
+
+```html
+<button class="hamburger" aria-label="منو">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+```
+
+```css
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 36px;
+    height: 28px;
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    gap: 5px;
+}
+.hamburger span {
+    display: block;
+    height: 2.5px;
+    background-color: #2d2d2d;
+    border-radius: 3px;
+}
+```
+
+**مشخصات فنی دقیق:**
+
+- **کل ابعاد دکمه:** با احتساب `padding: 0.5rem`، اندازه کلی حدود ۶۸px در ۶۰px می‌شود، اما سه خط در یک مستطیل ۳۶px در ۲۸px (به‌اضافه padding) نمایش داده می‌شوند.
+- **فاصله بین خطوط:** با `gap: 5px` به همراه `justify-content: space-between` خطوط به طور مساوی توزیع می‌شوند.
+- **هر خط:** ضخامت `2.5px`، رنگ `#2d2d2d`، گوشه‌های گرد `3px`.
+- **پس‌زمینه دکمه:** `none` (شفاف).
+- **حاشیه دکمه:** `none`.
+- **نشانگر ماوس:** `pointer`.
+
+---
+
+## 🛒 ۸. آیکون‌های سبد خرید و حساب کاربری
+
+```html
+<a href="#" class="header__icon" aria-label="سبد خرید">
+    <svg viewBox="0 0 24 24"> ... </svg>
+</a>
+<a href="#" class="header__icon" aria-label="حساب کاربری">
+    <svg viewBox="0 0 24 24"> ... </svg>
+</a>
+```
+
+```css
+.header__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: transparent;
+    color: #2d2d2d;
+    transition: background 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+}
+.header__icon svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.header__icon:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #1a1a1a;
+}
+```
+
+### ۸.۱. ابعاد و ظاهر
+
+- **اندازه ناحیه کلیک:** ۳۸px × ۳۸px.
+- **گوشه‌های گرد:** `border-radius: 12px`.
+- **پس‌زمینه عادی:** شفاف.
+- **رنگ عادی:** `#2d2d2d` (خاکستری تیره).
+- **انیمیشن هاور:** `transition: background 0.3s ease, color 0.3s ease`.
+- **هاور:** پس‌زمینه به `rgba(255,255,255,0.4)` و رنگ به `#1a1a1a` تغییر می‌کند.
+
+### ۸.۲. SVG آیکون سبد خرید
+
+```html
+<svg viewBox="0 0 24 24">
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18" />
+    <circle cx="8" cy="10" r="2" />
+    <circle cx="16" cy="10" r="2" />
+</svg>
+```
+
+- ابعاد: ۲۲px (توسط CSS کنترل می‌شود).
+- `stroke="currentColor"` برای به ارث بردن رنگ از المان والد.
+- `fill="none"` (بدون رنگ زمینه).
+- `stroke-width: 1.8` (ضخامت خطوط).
+- `stroke-linecap: round; stroke-linejoin: round` (گوشه‌های گرد).
+
+### ۸.۳. SVG آیکون حساب کاربری
+
+```html
+<svg viewBox="0 0 24 24">
+    <circle cx="12" cy="8" r="4" />
+    <path d="M20 21a8 8 0 10-16 0" />
+</svg>
+```
+
+- مشخصات مشابه آیکون سبد خرید.
+
+---
+
+## 🏷️ ۹. لوگوی مرکزی (همیشه داخل هدر)
+
+```html
+<a href="#" class="header-logo">
+    <span class="logo-icon">✦</span>
+    <span class="logo-text">برند شما</span>
+</a>
+```
+
+```css
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: #1e1e2f;
+    white-space: nowrap;
+}
+
+.header-logo .logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+}
+
+.header-logo .logo-text {
+    font-weight: 800;
+    font-size: 1.3rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+```
+
+### ۹.۱. جزئیات لوگو
+
+- **رنگ:** همیشه `#1e1e2f` (سرمه‌ای تیره) – مناسب برای پس‌زمینه‌های روشن.
+- **`gap: 0.6rem`** بین آیکون و متن.
+- **`white-space: nowrap`** از شکستن متن جلوگیری می‌کند.
+
+#### ۹.۱.۱. آیکون لوگو (`.logo-icon`)
+- **اندازه:** `36px × 36px`.
+- **گوشه‌های گرد:** `12px`.
+- **پس‌زمینه:** `rgba(255,255,255,0.2)` با افکت مات `blur(4px)` (نیمه شفاف).
+- **فونت:** `1.1rem` برای نمایش «✦».
+- **چیدمان داخلی:** flex center.
+
+#### ۹.۱.۲. متن لوگو (`.logo-text`)
+- **فونت:** `1.3rem` با وزن `800` (بسیار پررنگ).
+- **سایه متن:** `0 2px 8px rgba(0,0,0,0.15)` برای عمق.
+- **فاصله از آیکون:** `0.6rem` (از طریق gap).
+
+---
+
+## 📱 ۱۰. واکنش‌گرایی (Responsive)
+
+### ۱۰.۱. تبلت (max-width: 768px)
+
+```css
+@media screen and (max-width: 768px) {
+    .header {
+        height: 62px;
+        padding: 0 1rem;
+    }
+    .header.scrolled {
+        border-radius: 35px;
+        top: 8px;
+        left: 2%;
+        width: 96%;
+        height: 52px;
+        padding: 0 1.5rem;
+    }
+    .header-logo .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+    .header-logo .logo-text {
+        font-size: 1.1rem;
+    }
+}
+```
+
+- **ارتفاع هدر:** `62px` (به‌جای ۷۰px).
+- **پدینگ:** `0 1rem`.
+- **هدر شیشه‌ای:** `border-radius: 35px`, `top: 8px`, `width: 96%`, `height: 52px`, `padding: 0 1.5rem`.
+- **لوگو:** آیکون `30x30px` با `border-radius: 10px` و فونت `0.9rem`، متن `1.1rem`.
+
+### ۱۰.۲. موبایل (max-width: 480px)
+
+```css
+@media screen and (max-width: 480px) {
+    .header.scrolled {
+        border-radius: 28px;
+        top: 6px;
+    }
+    .header-logo .logo-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+        border-radius: 8px;
+    }
+    .header-logo .logo-text {
+        font-size: 1rem;
+    }
+}
+```
+
+- **هدر شیشه‌ای:** `border-radius: 28px`, `top: 6px`. (سایر مشخصات شیشه‌ای از تبلت به ارث می‌رسد: `left: 2%`, `width: 96%`, `height: 52px`).
+- **لوگو:** آیکون `28x28px` با `border-radius: 8px` و فونت `0.8rem`، متن `1rem`.
+
+> **توجه:** برای موبایل، عرض و ارتفاع هدر عادی همان ۶۲px از تبلت باقی می‌ماند. اگر نیاز به تغییر باشد، می‌توان جداگانه اضافه کرد، اما در نسخه فعلی یکسان است.
+
+---
+
+## 🖥️ ۱۱. منطق JavaScript
+
+تنها عملکرد JavaScript مدیریت کلاس `scrolled` روی هدر است.
+
+```javascript
+const header = document.getElementById('header');
+
+function updateHeaderClass() {
+    if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+}
+
+window.addEventListener('scroll', updateHeaderClass, { passive: true });
+updateHeaderClass(); // اعمال اولیه
+```
+
+- **شرط فعال‌سازی:** وقتی `window.scrollY` بیشتر از ۱۰px باشد.
+- **رویداد:** `scroll` با `{ passive: true }` برای بهبود عملکرد.
+- **اجرای اولیه:** بلافاصله پس از بارگذاری صفحه، وضعیت اسکرول بررسی می‌شود (اگر صفحه از قبل اسکرول شده باشد).
+
+---
+
+## 🎨 ۱۲. پالت رنگی
+
+| المان | رنگ (Hex / RGBA) |
+|--------|-------------------|
+| متن اصلی | `#1e293b` |
+| پس‌زمینه body (پیشنهادی) | `#f5f5f5` (خاکستری روشن) |
+| هدر – پس‌زمینه حالت شیشه‌ای | `rgba(255, 255, 255, 0.18)` |
+| هدر – حاشیه حالت شیشه‌ای | `rgba(255, 255, 255, 0.35)` |
+| هدر – سایه‌ها | `rgba(0,0,0,0.15)`, `rgba(0,0,0,0.08)`, `rgba(255,255,255,0.5)` |
+| رنگ خطوط همبرگر | `#2d2d2d` |
+| رنگ آیکون‌های سبد/کاربر (پیش‌فرض) | `#2d2d2d` |
+| رنگ آیکون‌ها (هاور) | `#1a1a1a` |
+| پس‌زمینه آیکون‌ها (هاور) | `rgba(255, 255, 255, 0.4)` |
+| لوگو – رنگ متن | `#1e1e2f` |
+| لوگو – پس‌زمینه آیکون | `rgba(255, 255, 255, 0.2)` |
+| لوگو – سایه متن | `rgba(0, 0, 0, 0.15)` |
+
+---
+
+## ⚙️ ۱۳. نکات حیاتی برای بازتولید دقیق
+
+1. **RTL بودن صفحه** (`dir="rtl"` در تگ `<html>`) الزامی است. در غیر این صورت ترتیب ناحیه‌ها برعکس خواهد شد و `justify-content` چپ و راست معنی متفاوتی پیدا می‌کند.
+2. **ترتیب CSS:** `backdrop-filter` و `-webkit-backdrop-filter` هر دو باید وجود داشته باشند تا در مرورگرهای مختلف (به‌ویژه Safari) کار کند.
+3. **حاشیه نامرئی:** `border: 1px solid transparent` در حالت عادی از پرش محتوا هنگام اضافه شدن حاشیه در حالت شیشه‌ای جلوگیری می‌کند.
+4. **`transition` یکسان** برای همه تغییرات هدر (`all 0.8s ...`) موجب انیمیشن هماهنگ می‌شود.
+5. **مقادیر دقیق `left` و `width`** در حالت شیشه‌ای: `left: 3%` و `width: 94%` جمعاً ۶٪ حاشیه از طرفین ایجاد می‌کند. اگر در breakpoint تبلت `left: 2%; width: 96%` شود، ۴٪ حاشیه خواهد بود.
+6. **فاصله داخلی (padding)** در حالت عادی `0 1.8rem` و در حالت شیشه‌ای `0 2.2rem` است. این تفاوت باعث می‌شود آیکون‌ها به‌آرامی از لبه‌ها فاصله بگیرند و با گردی هدر هماهنگ شوند.
+7. **اندازه آیکون‌های سبد/کاربر** در تمام breakpointها ثابت `38px × 38px` باقی می‌ماند (مگر اینکه به‌طور خاص تغییر داده شود). در نسخه فعلی تغییری نکرده است.
+8. **لوگو ثابت است** و هیچ‌گونه جابجایی یا تغییر اندازه در اسکرول ندارد. استایل‌های آن همواره همان مقادیر تعریف‌شده هستند.
+9. **فونت سیستم** (`system-ui, ...`) استفاده شده، اما در صورت نیاز می‌توان فونت سفارشی جایگزین کرد.
+10. **آیکون‌های SVG** باید دقیقاً با مقادیر `stroke-width`, `fill`, `stroke-linecap` و مسیرهای داده‌شده کپی شوند تا ظاهر یکسانی داشته باشند.
+
+---

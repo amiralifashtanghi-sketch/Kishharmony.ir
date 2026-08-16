@@ -1,0 +1,594 @@
+ظاهر گالری تصاویر
+
+## 🎯 هدف کلی
+یک بخش گالری تصاویر برای سایت «کیش هارمونی» که **اعتماد مشتریان** را جلب کند.  
+گالری فقط شامل عکس‌های واقعی (بدون متن روی کارت‌ها)، در یک شبکه **دو ستونی** نمایش داده می‌شود.  
+بالای گالری تیتر «گالری تصاویر کیش هارمونی» و پایین آن جمله‌ای برای تشویق کاربران به اشتراک‌گذاری عکس‌هایشان قرار دارد.  
+با کلیک روی هر عکس، یک لایت‌باکس با انیمیشن نرم باز می‌شود و کاربر می‌تواند با دکمه‌های بزرگ، کیبورد یا سوایپ لمسی بین تصاویر جابه‌جا شود.
+
+---
+
+## 🧱 ساختار HTML
+
+### بخش اصلی گالری
+```html
+<section class="gallery-section">
+    <h2 class="gallery-title">گالری تصاویر کیش هارمونی</h2>
+
+    <div class="gallery-grid" id="galleryGrid">
+        <div class="gallery-item">
+            <img src="آدرس-عکس" alt="توضیح" loading="lazy">
+        </div>
+        <!-- آیتم‌های بیشتر... -->
+    </div>
+
+    <p class="share-text">📸 عکس‌هایتان را با ما به اشتراک بگذارین</p>
+</section>
+```
+- از یک `<section>` با کلاس `gallery-section` به‌عنوان نگهدارنده استفاده شده است که حداکثر عرض `900px` دارد و وسط‌چین است.
+- تیتر `<h2>` با کلاس `gallery-title`.
+- شبکه گالری `<div class="gallery-grid" id="galleryGrid">` که مستقیماً شامل آیتم‌های گالری است.
+- هر آیتم: `<div class="gallery-item">` شامل یک تگ `<img>` با اتریبیوت `loading="lazy"` برای بارگذاری تنبل تصاویر.
+- پاراگراف دعوت: `<p class="share-text">`.
+
+### لایت‌باکس
+```html
+<div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lightboxClose">&times;</button>
+    <button class="lightbox__nav lightbox__prev" id="lightboxPrev">&#8249;</button>
+    <button class="lightbox__nav lightbox__next" id="lightboxNext">&#8250;</button>
+    <div class="lightbox__content-wrapper">
+        <img class="lightbox__image" id="lightboxImage" src="" alt="">
+    </div>
+    <div class="lightbox__counter" id="lightboxCounter"></div>
+</div>
+```
+- پوشش تمام‌صفحه با کلاس `lightbox`.
+- دکمه بستن (`&times;`) در بالا-راست.
+- دو دکمه جهت‌یابی قبلی/بعدی با کلاس `lightbox__nav` و موقعیت‌های چپ/راست.
+- یک بسته‌بند برای تصویر `lightbox__content-wrapper` که افکت بزرگ‌نمایی انیمیشن را اجرا می‌کند.
+- تصویر اصلی لایت‌باکس: `#lightboxImage` با `max-width/max-height` تنظیم‌شده برای نمایش کامل.
+- شمارنده تصویر (`lightbox__counter`) که در پایین و وسط نشان می‌دهد "3 / 6".
+
+---
+
+## 🎨 CSS – تمام جزئیات
+
+### تنظیمات کلی صفحه
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #eef5fa, #ffffff);
+    color: #1a2b3c;
+}
+```
+- ریست کامل با `box-sizing: border-box`.
+- فونت اصلی Segoe UI (با فونت‌های پشتیبان).
+- پس‌زمینه یک گرادیانت ملایم از آبی خیلی کمرنگ به سفید.
+
+### بخش گالری
+```css
+.gallery-section {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.gallery-title {
+    font-size: 2rem;
+    color: #0a3144;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+```
+- حداکثر عرض 900px برای حفظ خوانایی و تناسب دو ستون (چون تصاویر ممکن است کشیده شوند).  
+- Padding افقی برای موبایل.
+- تیتر با رنگ سرمه‌ای تیره، سایز 2rem، وسط‌چین و فاصله پایینی.
+
+### شبکه گالری – دقیقاً دو ستون
+```css
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 25px;
+}
+```
+- **همیشه دو ستون** بدون هیچ `media query` که آن را به یک ستون تغییر دهد.  
+- فاصله بین آیتم‌ها: 14px.
+
+### آیتم‌های گالری
+```css
+.gallery-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    background: #e0e6ed; /* رنگ اسکلتون */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+```
+- `position: relative` برای قرار دادن سایه و افکت شیشه‌ای اسکلتون.
+- گوشه‌های گرد 12px.
+- سایه ملایم.
+- پس‌زمینه خاکستری روشن (`#e0e6ed`) که پایه اسکلتون قبل از لود تصویر است.
+- نشانگر ماوس به‌صورت اشاره‌گر.
+
+### افکت لودینگ (shimmer)
+```css
+.gallery-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+```
+- با یک شبه‌عنصر `::before` یک گرادیانت شفاف-سفید-شفاف روی کل آیتم کشیده می‌شود.
+- با `background-size: 200% 100%` و حرکت `background-position`، موجی از روشنایی به‌طور مداوم حرکت می‌کند.
+- `pointer-events: none` تا کلیک از آن عبور کند و به تصویر زیرین برسد (در زمان لود مشکلی پیش نیاید).
+- هنگامی که تصویر کامل بارگذاری شد، کلاس `loaded` به آیتم اضافه می‌شود و این شبه‌عنصر مخفی می‌شود.
+
+### تصویر داخل آیتم
+```css
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    position: relative;
+    z-index: 2;
+}
+```
+- عرض 100% ستون، ارتفاع خودکار (نسبت واقعی تصویر حفظ می‌شود).
+- ابتدا شفاف (opacity:0) و بعد از لود با transition به opacity:1 می‌رسد.
+- `z-index: 2` برای قرار گرفتن روی شبه‌عنصر اسکلتون.
+- `display: block` برای حذف فضای خالی زیر تصویر.
+
+### حالت loaded (پس از بارگذاری موفق)
+```css
+.gallery-item.loaded::before {
+    display: none;
+}
+```
+- وقتی کلاس `loaded` توسط جاوااسکریپت اضافه شود، اسکلتون ناپدید می‌شود و تصویر (که حالا opacity:1 گرفته) نمایش داده می‌شود.
+
+### افکت hover
+```css
+.gallery-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+```
+- بزرگ‌نمایی 2% و سایه بیشتر برای حس تعاملی.
+
+### متن اشتراک
+```css
+.share-text {
+    font-size: 1.1rem;
+    color: #2f4f6e;
+    margin-top: 10px;
+    font-style: italic;
+}
+```
+- رنگ متن ملایم، ایتالیک، و با فاصله از گالری.
+
+---
+
+## 🖼️ لایت‌باکس – سبک‌ها و انیمیشن‌ها
+
+### پوشش کلی
+```css
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    touch-action: none;
+}
+
+.lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+```
+- تمام صفحه را با پس‌زمینه مشکی 92% شفاف می‌پوشاند.
+- با فلکس باکس، محتوا در مرکز قرار می‌گیرد.
+- به‌طور پیش‌فرض نامرئی (`opacity:0, visibility:hidden`). با افزودن کلاس `active`، با یک انیمیشن fade ظاهر می‌شود.
+- `touch-action: none` برای جلوگیری از اسکرول صفحه هنگام سوایپ.
+
+### بسته‌بند تصویر (برای انیمیشن scale)
+```css
+.lightbox__content-wrapper {
+    transform: scale(0.9);
+    transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 90%;
+    max-height: 85vh;
+    position: relative;
+}
+
+.lightbox.active .lightbox__content-wrapper {
+    transform: scale(1);
+}
+```
+- ابتدا در مقیاس 0.9 قرار دارد و هنگام active شدن به 1 می‌رسد (ease-out با bounce ملایم).
+- حداکثر ابعاد 90% عرض و 85vh ارتفاع تا تصویر از صفحه بیرون نزند.
+
+### تصویر لایت‌باکس
+```css
+.lightbox__image {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 6px;
+    transition: opacity 0.25s ease;
+}
+```
+- تصویر درون بسته‌بند به صورت contain نمایش داده می‌شود تا برش نخورد.
+- گوشه‌های گرد ملایم.
+- تغییر opacity با انیمیشن (برای افکت crossfade در جابه‌جایی).
+
+### دکمه بستن
+```css
+.lightbox__close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 3rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1002;
+    transition: transform 0.2s;
+}
+
+.lightbox__close:hover {
+    transform: scale(1.2);
+}
+```
+- بزرگ، سفید، بدون پس‌زمینه، با بزرگ‌شدن در hover.
+
+### دکمه‌های ناوبری (قبلی/بعدی)
+```css
+.lightbox__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.8rem;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.3);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.lightbox__nav:hover {
+    background: rgba(0,0,0,0.7);
+    border-color: #fff;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+```
+- پس‌زمینه شیشه‌ای (شفاف با تاری blur) که باعث می‌شود روی هر تصویری خوانا باشد.
+- اندازه بزرگ، دایره‌ای، سایه‌دار.
+- در hover تیره‌تر و کمی بزرگ‌تر می‌شوند.
+- موقعیت‌دهی:
+```css
+.lightbox__prev { left: 20px; }
+.lightbox__next { right: 20px; }
+```
+
+### شمارنده
+```css
+.lightbox__counter {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    z-index: 1001;
+}
+```
+- در پایین وسط، به شکل یک کپسول شیشه‌ای.
+
+### تطبیق برای موبایل (دکمه‌ها کوچک‌تر ولی همچنان دو ستون)
+```css
+@media (max-width: 500px) {
+    .lightbox__nav { width: 50px; height: 50px; font-size: 2.2rem; }
+    .lightbox__prev { left: 10px; }
+    .lightbox__next { right: 10px; }
+    .lightbox__close { top: 10px; right: 15px; font-size: 2.5rem; }
+}
+```
+- فقط اندازه دکمه‌ها و موقعیت‌شان کمی تنظیم می‌شود.  
+- **شبکه گالری همچنان دو ستون باقی می‌ماند** (هیچ مدیا کوئری برای تغییر تعداد ستون‌ها وجود ندارد).
+
+---
+
+## 🧠 جاوااسکریپت – منطق کامل
+
+### ۱. بارگذاری تنبل و افکت اسکلتون
+```javascript
+const galleryImages = document.querySelectorAll('.gallery-item img');
+galleryImages.forEach(img => {
+    const item = img.closest('.gallery-item');
+    if (img.complete) {
+        img.style.opacity = '1';
+        item.classList.add('loaded');
+    } else {
+        img.addEventListener('load', () => {
+            img.style.opacity = '1';
+            item.classList.add('loaded');
+        });
+    }
+    img.addEventListener('error', () => {
+        item.classList.add('loaded');
+    });
+});
+```
+- برای هر تصویر، بررسی می‌کند که آیا از قبل در کش مرورگر موجود است (`img.complete`). اگر بله، بلافاصله opacity و کلاس `loaded` را اعمال می‌کند.
+- اگر نه، یک listener برای رویداد `load` اضافه می‌کند که همان کار را انجام دهد.
+- در صورت خطا، همچنان اسکلتون مخفی می‌شود (بدون نمایش تصویر شکسته در کارت).  
+**مهم:** به دلیل `opacity: 0` در CSS، تا زمانی که کلاس `loaded` و opacity=1 تنظیم نشود، فقط اسکلتون دیده می‌شود.
+
+### ۲. لایت‌باکس – مدیریت حالت و ایندکس
+```javascript
+const items = document.querySelectorAll('.gallery-item');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightboxImage');
+const lightboxClose = document.getElementById('lightboxClose');
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
+const lightboxCounter = document.getElementById('lightboxCounter');
+
+const galleryItems = Array.from(items);
+let currentIndex = 0;
+let isTransitioning = false;
+let pendingIndex = null;
+let safetyTimer = null;
+```
+- `galleryItems`: آرایه‌ای از تمام آیتم‌های گالری.
+- `currentIndex`: ایندکس فعلی.
+- `isTransitioning`: قفل برای جلوگیری از چندین تغییر همزمان.
+- `pendingIndex`: اگر در حین transition دکمه‌ای زده شود، درخواست ذخیره می‌شود.
+- `safetyTimer`: برای تایمر امنیتی جهت خروج از قفل در صورت لود نشدن عکس.
+
+### توابع کمکی
+```javascript
+function updateCounter(index) {
+    if (lightboxCounter) {
+        lightboxCounter.textContent = `${index + 1} / ${galleryItems.length}`;
+    }
+}
+
+function releaseLock() {
+    isTransitioning = false;
+    if (safetyTimer) {
+        clearTimeout(safetyTimer);
+        safetyTimer = null;
+    }
+    if (pendingIndex !== null) {
+        const nextIdx = pendingIndex;
+        pendingIndex = null;
+        changeImage(nextIdx);
+    }
+}
+```
+- `updateCounter`: شمارنده را به‌روز می‌کند.
+- `releaseLock`: قفل را آزاد می‌کند، تایمر امنیتی را پاک می‌کند و اگر درخواست معوقی وجود داشته باشد (`pendingIndex`) آن را اجرا می‌کند.
+
+### باز و بسته کردن لایت‌باکس
+```javascript
+function openLightbox(index) {
+    if (galleryItems.length === 0) return;
+    const img = galleryItems[index].querySelector('img');
+    lightboxImage.src = img.src;
+    lightboxImage.alt = img.alt;
+    currentIndex = index;
+    updateCounter(index);
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+}
+```
+- هنگام باز شدن، تصویر را مستقیماً از `src` آیتم می‌گیرد.
+- `body` اسکرول صفحه قفل می‌شود و با بسته شدن آزاد.
+
+### تابع تغییر تصویر (قلب باگ‌گیری)
+```javascript
+function changeImage(newIndex) {
+    if (galleryItems.length === 0) return;
+    if (newIndex === currentIndex) return;
+
+    if (isTransitioning) {
+        pendingIndex = newIndex;
+        return;
+    }
+
+    isTransitioning = true;
+    pendingIndex = null;
+
+    lightboxImage.style.opacity = '0';
+
+    const targetImg = galleryItems[newIndex].querySelector('img');
+    const newSrc = targetImg.src;
+    const newAlt = targetImg.alt;
+
+    const applyChange = () => {
+        lightboxImage.src = newSrc;
+        lightboxImage.alt = newAlt;
+        currentIndex = newIndex;
+        updateCounter(newIndex);
+        lightboxImage.style.opacity = '1';
+        releaseLock();
+    };
+
+    const preloader = new Image();
+    let applied = false;
+
+    const doApply = () => {
+        if (!applied) {
+            applied = true;
+            applyChange();
+        }
+    };
+
+    preloader.onload = doApply;
+    preloader.onerror = doApply;
+
+    safetyTimer = setTimeout(() => {
+        if (!applied) {
+            doApply();
+        }
+    }, 3000);
+
+    preloader.src = newSrc;
+
+    if (preloader.complete) {
+        doApply();
+    }
+}
+```
+**توضیح گام‌به‌گام:**
+1. اگر درخواست همان ایندکس باشد یا آرایه خالی باشد، کاری نمی‌کند.
+2. اگر در حال transition هستیم (`isTransitioning == true`)، درخواست جدید را در `pendingIndex` ذخیره می‌کند و خارج می‌شود.
+3. در غیر این صورت، `isTransitioning` را true می‌کند.
+4. تصویر فعلی با `opacity: 0` محو می‌شود (زمان transition: 0.25s).
+5. یک `Image` جدید (`preloader`) می‌سازد و `onload` و `onerror` آن را به `doApply` متصل می‌کند.
+6. یک تایمر امنیتی ۳ ثانیه‌ای تنظیم می‌کند: اگر `onload`/`onerror` به هر دلیلی فراخوانی نشد (مثلاً مرورگر در کش بود ولی complete نبود و onload آتش نگرفت)، بعد از ۳ ثانیه به‌زور `doApply` را اجرا می‌کند.
+7. سپس `src` را تنظیم می‌کند تا بارگذاری شروع شود.
+8. اگر عکس از قبل در کش باشد و `preloader.complete` بلافاصله true شود (قبل از اجرای onload)، باز هم `doApply` صدا زده می‌شود (با یک بار فراخوانی).
+
+`doApply` فقط یک بار اجرا می‌شود و تابع `applyChange` را صدا می‌زند که:
+- تصویر لایت‌باکس را با `src` جدید به‌روز می‌کند.
+- شمارنده را آپدیت می‌کند.
+- `opacity` را دوباره 1 می‌کند.
+- `releaseLock` را فراخوانی می‌کند (قفل آزاد، تایمر پاک، اجرای درخواست معوق).
+
+به این ترتیب، حتی اگر عکس لود نشود یا مرورگر قفل کند، دکمه‌ها هرگز گیر نمی‌کنند.
+
+### توابع حرکت
+```javascript
+function showPrev() {
+    const newIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+    changeImage(newIndex);
+}
+
+function showNext() {
+    const newIndex = (currentIndex + 1) % galleryItems.length;
+    changeImage(newIndex);
+}
+```
+- محاسبه ایندکس با گردش (وقتی به اول/آخر رسید به ابتدا/انتها می‌رود).
+
+### اتصال رویدادها
+
+#### کلیک روی آیتم‌های گالری
+```javascript
+document.getElementById('galleryGrid').addEventListener('click', function(e) {
+    const item = e.target.closest('.gallery-item');
+    if (!item) return;
+    const index = galleryItems.indexOf(item);
+    if (index !== -1) openLightbox(index);
+});
+```
+- با استفاده از `closest`، کلیک روی تصویر یا فضای خالی کارت تشخیص داده می‌شود.
+
+#### دکمه‌های لایت‌باکس و بستن
+```javascript
+lightboxClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) closeLightbox();
+});
+lightboxPrev.addEventListener('click', showPrev);
+lightboxNext.addEventListener('click', showNext);
+```
+- بستن با کلیک روی خارج از تصویر (پس‌زمینه تیره) نیز ممکن است.
+
+#### کیبورد
+```javascript
+document.addEventListener('keydown', function(e) {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showPrev();
+    if (e.key === 'ArrowRight') showNext();
+});
+```
+- Esc = بستن، جهت‌نما چپ/راست = حرکت.
+
+#### سوایپ لمسی
+```javascript
+let touchStartX = 0;
+lightbox.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+lightbox.addEventListener('touchend', function(e) {
+    const touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) < 50) return; // حداقل 50px
+    if (diff > 0) showNext(); // کشیدن به چپ
+    else showPrev();         // کشیدن به راست
+}, {passive: true});
+```
+- سوایپ‌های کوتاه نادیده گرفته می‌شوند.
+
+---
+
+## 📌 نکات نهایی برای بازآفرینی دقیق
+- **همیشه دو ستون**؛ هیچ مدیا کوئری برای تغییر `grid-template-columns` وجود ندارد.
+- **تصاویر** ابعاد اصلی خود را حفظ می‌کنند (`height: auto`، بدون برش یا نسبت ثابت).
+- **اسکلتون شیشه‌ای** دقیقاً با همان انیمیشن و رنگ‌ها (`#e0e6ed` پس‌زمینه، گرادیانت سفید نیمه‌شفاف).
+- **لایت‌باکس** با `visibility` و `opacity` انیمیشن می‌شود، دکمه‌های شیشه‌ای با `backdrop-filter: blur(10px)` (در مرورگرهایی که پشتیبانی نمی‌کنند، بدون blur هم قابل قبول است).
+- **فونت آیکون‌ها** : `×` برای بستن، `‹` و `›` برای قبلی/بعدی (با کدهای HTML entity).
+- **شمارنده** به‌صورت `"3 / 6"` نمایش داده می‌شود.
+- **تایمر امنیتی ۳ ثانیه‌ای** و سیستم `pendingIndex` از قفل شدن دکمه‌ها در هر شرایطی جلوگیری می‌کند.
+
+همه اینها دقیقاً همان چیزی است که در آخرین کد ارائه شده وجود دارد. حالا می‌توانی با خیال راحت به هر توسعه‌دهنده‌ای این مشخصات را بدهی و مطمئن باشی که خروجی نهایی دقیقاً مثل نمونه‌ای خواهد بود که ما ساختیم. 😊
