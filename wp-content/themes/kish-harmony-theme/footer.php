@@ -14,17 +14,17 @@ foreach ($category_items as $item) {
 ?>
 
 <!-- Modern Glassmorphic Popup Modal for AJAX Categories -->
-<div id="khd-ajax-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
-    <div class="relative bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full overflow-hidden transform scale-95 transition-all duration-300" id="khd-modal-card">
+<div id="khd-ajax-modal" class="khd-modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="khd-modal-card relative bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full overflow-hidden transform scale-95 transition-all duration-300" id="khd-modal-card">
         <!-- Modal Header -->
-        <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
-            <h3 class="text-lg font-black text-slate-800" id="khd-modal-title">عنوان پاپ‌آپ</h3>
-            <button id="khd-modal-close-btn" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-all cursor-pointer">
+        <div class="khd-modal-header flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
+            <h3 class="khd-modal-title text-lg font-black text-slate-800" id="khd-modal-title">عنوان پاپ‌آپ</h3>
+            <button id="khd-modal-close-btn" class="khd-modal-close w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-700 flex items-center justify-center transition-all cursor-pointer">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
         <!-- Modal Content -->
-        <div class="p-6 text-sm text-slate-600 leading-relaxed custom-scrollbar max-h-[70vh] overflow-y-auto" id="khd-modal-body">
+        <div class="khd-modal-body p-6 text-sm text-slate-600 leading-relaxed custom-scrollbar max-h-[70vh] overflow-y-auto" id="khd-modal-body">
             <!-- Dynamic Content -->
         </div>
     </div>
@@ -55,8 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Show modal with animation
                 modal.classList.remove('opacity-0', 'pointer-events-none');
-                card.classList.remove('scale-95');
-                card.classList.add('scale-100');
+                modal.classList.add('khd-modal-active');
+                if (card) {
+                    card.classList.remove('scale-95');
+                    card.classList.add('scale-100');
+                }
             }
         }
     });
@@ -64,11 +67,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close Modal helper
     function closeModal() {
         modal.classList.add('opacity-0', 'pointer-events-none');
-        card.classList.remove('scale-100');
-        card.classList.add('scale-95');
+        modal.classList.remove('khd-modal-active');
+        if (card) {
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+        }
     }
 
-    closeBtn.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             closeModal();

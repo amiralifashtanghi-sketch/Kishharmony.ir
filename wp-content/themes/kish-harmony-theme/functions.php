@@ -31,15 +31,18 @@ function kish_harmony_scripts() {
     // FontAwesome 6.5.1
     wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
 
-    // Vazirmatn Persian Google Font (Only load from external Google API if our local-fonts plugin is inactive)
+    // Tailwind CSS CDN for structural utilities
+    wp_enqueue_style('tailwindcss-cdn', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css', array(), '2.2.19');
+
+    // Vazirmatn Persian Font (Fallback if plugin inactive)
     if (!class_exists('\KishHarmonyDesigner\Frontend')) {
         wp_enqueue_style('vazirmatn-font', 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap', array(), '33.003');
     }
 
     // Main Theme Compiled Style
-    wp_enqueue_style('kish-harmony-style', get_stylesheet_uri(), array(), '1.0.0');
+    wp_enqueue_style('kish-harmony-style', get_stylesheet_uri(), array('tailwindcss-cdn'), '1.1.0');
 
     // Interactive main theme script
-    wp_enqueue_script('kish-harmony-main', get_template_directory_uri() . '/assets/js/main.js', array(), '1.0.0', true);
+    wp_enqueue_script('kish-harmony-main', get_template_directory_uri() . '/assets/js/main.js', array(), '1.1.0', true);
 }
 add_action('wp_enqueue_scripts', 'kish_harmony_scripts');

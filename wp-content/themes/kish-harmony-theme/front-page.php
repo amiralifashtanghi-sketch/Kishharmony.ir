@@ -25,149 +25,8 @@ foreach ($sections as $sec) {
     }
 }
 
-$hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '#1a56db';
+$hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '#0B63D8';
 ?>
-
-<style>
-    /* Exact Hero & Categories CSS Spec from User */
-    .hero {
-        width: 100%;
-        background-color: <?php echo esc_attr($hero_bg_color); ?>;
-        padding-top: 70px;
-        position: relative;
-        height: 542px;
-        overflow: visible;
-    }
-
-    .banner {
-        height: 360px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        padding: 0 1.5rem;
-    }
-
-    .categories-wrapper {
-        max-width: 820px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .categories-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        border: 1px solid #e5e7eb;
-        border-radius: 28px;
-        overflow: hidden;
-        background-color: #ffffff;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-    }
-
-    .category-item {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.9rem 1.2rem;
-        background-color: #ffffff;
-        border-right: 1px solid #e5e7eb;
-        border-bottom: 1px solid #e5e7eb;
-        min-height: 56px;
-        transition: background-color 0.2s ease;
-        cursor: pointer;
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .category-item:nth-child(2n) {
-        border-right: none;
-    }
-
-    .category-item:nth-last-child(-n+2) {
-        border-bottom: none;
-    }
-
-    .category-item:hover {
-        background-color: #f8fafc;
-    }
-
-    .category-emoji {
-        font-size: 1.3rem;
-        width: 1.8rem;
-        text-align: center;
-        flex-shrink: 0;
-    }
-
-    .category-text {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: #1e293b;
-    }
-
-    .badge {
-        font-size: 0.55rem;
-        background: #fcd34d;
-        color: #1e293b;
-        padding: 0.1rem 0.6rem;
-        border-radius: 20px;
-        font-weight: 700;
-        margin-right: auto;
-    }
-
-    .category-item.special .category-text {
-        color: #1a56db;
-    }
-
-    .below-hero {
-        background: #ffffff;
-        min-height: 500px;
-        padding-top: 40px;
-    }
-
-    @media screen and (max-width: 768px) {
-        .banner {
-            height: 260px;
-        }
-        .categories-grid {
-            border-radius: 20px;
-        }
-        .category-item {
-            padding: 0.6rem 0.8rem;
-        }
-        .category-emoji {
-            font-size: 1.1rem;
-        }
-        .category-text {
-            font-size: 0.8rem;
-        }
-        .hero {
-            height: calc(62px + 260px + 112px);
-            padding-top: 62px;
-        }
-    }
-
-    @media screen and (max-width: 480px) {
-        .banner {
-            height: 200px;
-        }
-        .categories-grid {
-            border-radius: 16px;
-        }
-        .category-item {
-            padding: 0.5rem 0.6rem;
-        }
-        .category-emoji {
-            font-size: 0.95rem;
-        }
-        .category-text {
-            font-size: 0.72rem;
-        }
-        .hero {
-            height: calc(62px + 200px + 112px);
-            padding-top: 62px;
-        }
-    }
-</style>
 
 <!-- HERO CONTAINER AND CATEGORIES OVERLAY -->
 <div class="hero" id="hero">
@@ -184,7 +43,7 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
                     ?>
                     <a href="<?php echo $href; ?>" class="category-item <?php echo esc_attr($click_class); ?> <?php echo esc_attr($special_class); ?>" data-id="<?php echo esc_attr($item['id']); ?>" data-label="<?php echo esc_attr($item['label']); ?>">
                         <?php if (($item['type'] ?? 'icon') === 'icon') : ?>
-                            <i class="fa-solid <?php echo esc_attr($item['icon_val'] ?? 'fa-circle-question'); ?> category-emoji" style="color:#1a56db;"></i>
+                            <i class="fa-solid <?php echo esc_attr($item['icon_val'] ?? 'fa-circle-question'); ?> category-emoji" style="color:#0B63D8;"></i>
                         <?php elseif ($item['type'] === 'image') : ?>
                             <img src="<?php echo esc_url($item['image_url']); ?>" class="category-emoji" style="max-height: 1.3rem; object-fit: contain;">
                         <?php else : ?>
@@ -204,7 +63,7 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
 </div>
 
 <div class="below-hero">
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 py-8">
+    <main class="khd-main-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 py-8">
         <?php
         // Loop and render all remaining active blocks from designer plugin
         foreach ($sections as $section) {
@@ -217,21 +76,21 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
                     ?>
                     <!-- Search & Filter Bar -->
                     <section class="search-filter-section bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm">
-                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                        <div class="search-header-row flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-5">
                             <div>
-                                <h2 class="text-xl sm:text-2xl font-black text-[#071E3D] flex items-center gap-2">
-                                    <i class="fa-solid fa-magnifying-glass text-[#0B63D8]"></i>
+                                <h2 class="search-title text-xl sm:text-2xl font-black text-[#071E3D] flex items-center gap-2">
+                                    <i class="fa-solid fa-magnifying-glass search-title-icon text-[#0B63D8]"></i>
                                     <span>جستجوی سریع تفریحات هیجان‌انگیز کیش</span>
                                 </h2>
-                                <p class="text-xs text-slate-500 mt-1">جستجو در بین ده‌ها کلوپ، خودرو و گشت دریایی</p>
+                                <p class="search-subtitle text-xs text-slate-500 mt-1">جستجو در بین ده‌ها کلوپ، خودرو و گشت دریایی</p>
                             </div>
                         </div>
 
-                        <div class="relative mb-6">
-                            <input id="main-search-input" type="text" placeholder="جستجو (مثلاً پاراسل، غواصی، جت‌اسکی، رنت موستانگ...)" class="w-full bg-slate-50 border border-slate-200 focus:border-[#0B63D8] focus:bg-white rounded-2xl py-3.5 pr-12 pl-28 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner">
-                            <i class="fa-solid fa-search absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                            <button id="main-search-btn" class="absolute left-2 top-1/2 -translate-y-1/2 bg-[#0B63D8] hover:bg-[#084bb3] text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md">
-                                جستجو
+                        <div class="search-input-wrapper relative w-full">
+                            <i class="fa-solid fa-search search-input-icon absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                            <input id="main-search-input" type="text" placeholder="جستجو (مثلاً پاراسل، غواصی، جت‌اسکی، رنت موستانگ...)" class="search-input-field w-full bg-slate-50 border border-slate-200 focus:border-[#0B63D8] focus:bg-white rounded-2xl py-3.5 pr-12 pl-28 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner">
+                            <button id="main-search-btn" class="search-submit-btn absolute left-2 top-1/2 -translate-y-1/2 bg-[#0B63D8] hover:bg-[#084bb3] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md">
+                                <span>جستجو</span>
                             </button>
                         </div>
                     </section>
@@ -239,12 +98,12 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
                     break;
                 case 'sea_category':
                     ?>
-                    <section class="sea-category-bar space-y-4">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">🌊</span>
+                    <section class="sea-category-bar bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm">
+                        <div class="sea-category-content flex items-center gap-4">
+                            <span class="sea-emoji text-3xl">🌊</span>
                             <div>
-                                <h2 class="text-2xl font-black text-[#071E3D]">دسته‌بندی تفریحات دریایی و ساحلی</h2>
-                                <p class="text-xs text-slate-500">بهترین تجربه کلوپ‌های دریایی، تفریحات هوایی و سفرهای ساحلی کیش با تضمین قیمت</p>
+                                <h2 class="sea-title text-xl sm:text-2xl font-black text-[#071E3D]">دسته‌بندی تفریحات دریایی و ساحلی</h2>
+                                <p class="sea-subtitle text-xs text-slate-500 mt-1">بهترین تجربه کلوپ‌های دریایی، تفریحات هوایی و سفرهای ساحلی کیش با تضمین قیمت</p>
                             </div>
                         </div>
                     </section>
@@ -252,14 +111,12 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
                     break;
                 case 'special_offers':
                     ?>
-                    <section id="special-offers" class="bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent p-6 sm:p-8 rounded-3xl border border-amber-500/20 shadow-sm">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center gap-3">
-                                <i class="fa-solid fa-fire text-3xl text-[#FF8A00]"></i>
-                                <div>
-                                    <h2 class="text-2xl font-black text-[#071E3D]">پیشنهادهای ویژه و بلیط‌های لحظه آخری کیش</h2>
-                                    <p class="text-xs text-slate-500">تخفیف‌های محدود تفریحات آبی و رنت خودرو</p>
-                                </div>
+                    <section id="special-offers" class="special-offers-section bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent p-6 sm:p-8 rounded-3xl border border-amber-500/20 shadow-sm">
+                        <div class="special-offers-content flex items-center gap-4">
+                            <i class="fa-solid fa-fire special-icon text-3xl text-[#FF8A00]"></i>
+                            <div>
+                                <h2 class="special-title text-xl sm:text-2xl font-black text-[#071E3D]">پیشنهادهای ویژه و بلیط‌های لحظه آخری کیش</h2>
+                                <p class="special-subtitle text-xs text-slate-500 mt-1">تخفیف‌های محدود تفریحات آبی و رنت خودرو</p>
                             </div>
                         </div>
                     </section>
@@ -267,12 +124,12 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
                     break;
                 case 'custom_html_1':
                     if (!empty($settings['custom_html_1_code'])) {
-                        echo '<div class="khd-custom-block-1">' . $settings['custom_html_1_code'] . '</div>';
+                        echo '<div class="khd-custom-block-1 mb-8">' . $settings['custom_html_1_code'] . '</div>';
                     }
                     break;
                 case 'custom_html_2':
                     if (!empty($settings['custom_html_2_code'])) {
-                        echo '<div class="khd-custom-block-2">' . $settings['custom_html_2_code'] . '</div>';
+                        echo '<div class="khd-custom-block-2 mb-8">' . $settings['custom_html_2_code'] . '</div>';
                     }
                     break;
             }
@@ -281,7 +138,7 @@ $hero_bg_color = !empty($hero_banner['bg_color']) ? $hero_banner['bg_color'] : '
     </main>
 </div>
 
-<!-- User's Exact JS for Floating Logo Smooth Easing Scroll Transitions -->
+<!-- Floating Logo Physics Scroll Easing Script -->
 <script>
     (function() {
         const header = document.getElementById('header');
