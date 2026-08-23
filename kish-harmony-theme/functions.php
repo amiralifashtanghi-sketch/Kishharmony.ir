@@ -1,53 +1,55 @@
 <?php
 /**
- * Kish Harmony Child Theme Functions
+ * Kish Harmony WordPress Theme Functions
  */
 
 if (!defined('ABSPATH')) {
-    exit;
+    exit; // Exit if accessed directly
 }
 
-// 1. Include Theme Options & WooCommerce Metaboxes
-if (file_exists(get_stylesheet_directory() . '/inc/theme-options.php')) {
-    require_once get_stylesheet_directory() . '/inc/theme-options.php';
-}
-
-// 2. Theme Setup
-function kishharmony_child_setup() {
+function kish_harmony_setup() {
+    add_theme_support('automatic-feed-links');
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
-    add_theme_support('woocommerce');
 
     register_nav_menus(array(
         'primary-menu' => __('منوی اصلی هدر', 'kish-harmony'),
         'footer-menu'  => __('منوی فوتر', 'kish-harmony'),
     ));
+
+    add_theme_support('html5', array(
+        'search-form',
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+    ));
 }
-add_action('after_setup_theme', 'kishharmony_child_setup');
+add_action('after_setup_theme', 'kish_harmony_setup');
 
-// 3. Enqueue Styles & Native Scripts
-function kishharmony_child_scripts() {
-    // Main Child Theme Stylesheet
-    wp_enqueue_style('kishharmony-parent-style', get_template_directory_uri() . '/style.css');
-    wp_enqueue_style('kishharmony-child-style', get_stylesheet_uri(), array('kishharmony-parent-style'), '1.0.0');
-
+function kish_harmony_scripts() {
     // FontAwesome 6.5.1
     wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
 
-    // Vazirmatn Font
-    wp_enqueue_style('vazirmatn-font', 'https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css', array(), '33.003');
+    // Vazirmatn Persian Google Font
+    wp_enqueue_style('vazirmatn-font', 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap', array(), '33.003');
 
-    // Theme Custom JS Script
-    wp_enqueue_script('kishharmony-main-js', get_stylesheet_directory_uri() . '/assets/js/main-native.js', array(), '1.0.0', true);
+    // Main Theme Compiled Style
+    wp_enqueue_style('kish-harmony-style', get_stylesheet_uri(), array(), '1.0.0');
+
+    // React Bundle Script (with ES Module support)
+    wp_enqueue_script('kish-harmony-app', get_template_directory_uri() . '/assets/js/app-bundle.js', array(), '1.0.0', true);
+
+    // Interactive fallback script
+    wp_enqueue_script('kish-harmony-main', get_template_directory_uri() . '/assets/js/main.js', array(), '1.0.0', true);
 }
-add_action('wp_enqueue_scripts', 'kishharmony_child_scripts');
+add_action('wp_enqueue_scripts', 'kish_harmony_scripts');
 
-// 4. WooCommerce Cart Fragments (Live Cart Count)
-add_filter('woocommerce_add_to_cart_fragments', 'kishharmony_cart_count_fragments', 10, 1);
-function kishharmony_cart_count_fragments($fragments) {
-    if (class_exists('WooCommerce') && !is_null(WC()->cart)) {
-        $count = WC()->cart->get_cart_contents_count();
-        $fragments['span.custom-cart-count'] = '<span class="cart-count custom-cart-count">' . esc_html($count) . '</span>';
+// Inject type="module" for Vite ES Module bundles in WordPress
+function kish_harmony_script_type_module($tag, $handle, $src) {
+    if ('kish-harmony-app' === $handle || 'kish-harmony-main' === $handle) {
+        return '<script type="module" src="' . esc_url($src) . '"></script>' . "\n";
     }
-    return $fragments;
+    return $tag;
 }
+add_filter('script_loader_tag', 'kish_harmony_script_type_module', 10, 3);
