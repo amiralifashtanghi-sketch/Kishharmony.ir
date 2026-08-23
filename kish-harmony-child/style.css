@@ -1,18 +1,36 @@
 /*
-Theme Name: Kish Harmony
+Theme Name: Kish Harmony Child
 Theme URI: https://kish-harmony.ir
 Author: Kish Harmony Team
 Author URI: https://kish-harmony.ir
-Description: قالب بچه (Child Theme) اختصاصی و فوق‌پیشرفته کیش هارمونی برای قالب بیست و بیست و پنج (Twenty Twenty-Five) وردپرس
+Description: قالب بچه (Child Theme) فوق‌پیشرفته کیش هارمونی بر پایه قالب Twenty Twenty-Five بیست و بیست و پنج وردپرس
 Version: 1.0.0
 Template: twentytwentyfive
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: kish-harmony
+Text Domain: kish-harmony-child
 Tags: tourism, booking, kish, persian, rtl, responsive-layout, custom-menu, featured-images, luxury
 */
 
-/* --- Base & Reset Rules --- */
+/* ==========================================================================
+   ۱. متغیرهای سراسری و ریست کامل (CSS Tokens & Base Reset)
+   ========================================================================== */
+:root {
+    --kh-primary: #0B63D8;      /* 60%: آبی پررنگ */
+    --kh-secondary: #18D6D8;    /* 30%: فیروزه‌ای */
+    --kh-light-blue: #AEEBFF;   /* آبی روشن */
+    --kh-accent: #FF8A00;       /* 10%: نارنجی تأکیدی */
+    --kh-purple: #6C3FBF;       /* بنفش VIP */
+    --kh-text-dark: #0a2540;
+    --kh-text-mid: #5a6f80;
+    --kh-bg: #f8fafc;
+    --kh-white: #ffffff;
+    --kh-shadow-sm: 0 2px 8px rgba(11, 99, 216, 0.06);
+    --kh-shadow-md: 0 6px 22px rgba(11, 99, 216, 0.10);
+    --kh-shadow-lg: 0 14px 38px rgba(11, 99, 216, 0.16);
+    --kh-transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -24,8 +42,8 @@ html, body {
     text-align: right;
     margin: 0;
     padding: 0;
-    background-color: #f8fafc;
-    color: #1e293b;
+    background-color: var(--kh-bg);
+    color: var(--kh-text-dark);
     font-family: 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
@@ -40,14 +58,16 @@ html, body {
     background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #0b63d8;
+    background: var(--kh-primary);
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #18d6d8;
+    background: var(--kh-secondary);
 }
 
-/* Standalone Styling Engine for Header, Floating Logo, Gallery & Footer */
+/* ==========================================================================
+   ۲. استایل کامل هدر شیشه‌ای و لوگوی شناور (Home Header & Floating Logo)
+   ========================================================================== */
 .header {
     position: fixed;
     top: 0;
@@ -62,6 +82,9 @@ html, body {
     background: transparent;
     border: 1px solid transparent;
     border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     transition: all 0.8s cubic-bezier(0.45, 0, 0.55, 1.0);
 }
 
@@ -76,7 +99,7 @@ html, body {
     height: 58px;
     padding: 0 2.2rem;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 20px 40px -12px rgba(30, 58, 138, 0.1), 0 4px 12px rgba(30, 58, 138, 0.05), inset 0 1px 0 rgba(255,255,255,0.6);
+    box-shadow: 0 20px 40px -12px rgba(11, 99, 216, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .header__left, .header__right {
@@ -136,6 +159,7 @@ html, body {
     height: 2.5px;
     background-color: #ffffff;
     border-radius: 3px;
+    transition: all 0.3s ease;
 }
 .header.scrolled .hamburger span {
     background-color: #2d2d2d;
@@ -157,6 +181,10 @@ html, body {
 .header.scrolled .header__icon {
     color: #2d2d2d;
 }
+.header__icon:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #1a1a1a;
+}
 .header__icon svg {
     width: 22px;
     height: 22px;
@@ -171,7 +199,7 @@ html, body {
     position: absolute;
     top: -4px;
     right: -4px;
-    background: #FF8A00;
+    background: var(--kh-accent);
     color: white;
     font-size: 0.65rem;
     width: 18px;
@@ -181,8 +209,209 @@ html, body {
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    box-shadow: 0 2px 5px rgba(255, 138, 0, 0.4);
 }
 
+/* ==========================================================================
+   ۳. اسلایدر بنر اصلی (Banner Slider Rules)
+   ========================================================================== */
+.slider-container {
+    max-width: 1400px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+.slider {
+    display: flex;
+    width: 100%;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+.slide {
+    min-width: 100%;
+    height: 420px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: brightness(0.85);
+}
+
+/* ==========================================================================
+   ۴. دسته‌بندی تفریحات (Grid Soft Rules)
+   ========================================================================== */
+.grid-soft {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+}
+.card-soft {
+    aspect-ratio: 1 / 1;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+    text-decoration: none;
+    background-size: cover;
+    background-position: center;
+}
+.card-soft::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 10%, rgba(0, 0, 0, 0.1) 60%);
+    transition: background 0.4s;
+}
+.card-soft:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.18);
+}
+.card-soft:hover::before {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.25) 70%);
+}
+.card-soft i {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    color: rgba(255, 255, 255, 0.9);
+    z-index: 1;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+.card-label {
+    position: relative;
+    z-index: 1;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 14px;
+    width: 100%;
+    text-align: center;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+}
+
+/* ==========================================================================
+   ۵. کارت‌های رنت خودرو (Car Rental Styling Rules)
+   ========================================================================== */
+.car-card {
+    background: var(--kh-white);
+    border-radius: 20px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--kh-shadow-sm);
+    border: 1.5px solid transparent;
+    transition: all var(--kh-transition);
+    cursor: pointer;
+    position: relative;
+}
+.car-card:hover {
+    border-color: var(--kh-secondary);
+    box-shadow: var(--kh-shadow-lg);
+    transform: translateY(-4px);
+    background: #fafeff;
+}
+.car-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 4px;
+    background: var(--kh-secondary);
+    border-radius: 4px 0 0 4px;
+    opacity: 0;
+    transition: opacity var(--kh-transition);
+}
+.car-card:hover::before { opacity: 1; }
+
+.badge-special {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--kh-accent);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(255, 138, 0, 0.4);
+}
+
+/* ==========================================================================
+   ۶. گالری تصاویر و لایت‌باکس (Gallery & Lightbox Rules)
+   ========================================================================== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 25px;
+}
+.gallery-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    background: #e0e6ed;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.gallery-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.gallery-item.loaded::before { display: none; }
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    touch-action: none;
+}
+.lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ==========================================================================
+   ۷. شاه‌کار انیمیشن فوتر (Animated SVG Footer Rules)
+   ========================================================================== */
 @keyframes floatUp {
     0% { transform: translateY(0) scale(1); opacity: 0.02; }
     50% { transform: translateY(-250px) scale(1.5); opacity: 0.05; }
