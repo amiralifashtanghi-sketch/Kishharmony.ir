@@ -1,11 +1,12 @@
 <?php
 /**
  * Module 1: Home Header & Hero Section with Floating Logo, Glassmorphism Header, Mobile Menu & Cart Drawer
+ * Inspired strictly by "طراحی PHP هدر.txt"
  */
 
 $brand_fa   = kishharmony_get_option('brand_name_fa', 'کیش هارمونی');
 $brand_en   = kishharmony_get_option('brand_name_en', 'Kish Harmony');
-$hero_bg    = kishharmony_get_option('hero_bg_color', '#0B63D8');
+$hero_bg    = kishharmony_get_option('hero_bg_color', '#1e3a8a');
 $hero_title = kishharmony_get_option('hero_title', 'سامانه آنلاین رزرو کیش هارمونی');
 $hero_desc  = kishharmony_get_option('hero_desc', 'رزرو مستقیم تفریحات آبی، اجاره ماشین‌های سوپراسپرت و اقامتگاه‌های لوکس با تخفیف روزانه و پشتیبانی ۲۴ ساعته در کیش');
 
@@ -41,10 +42,9 @@ $account_link = class_exists('WooCommerce') ? get_permalink(get_option('woocomme
                 'fallback_cb'    => false,
             ));
         } else {
-            // Default Fallback Desktop Menu
             echo '<ul class="desktop-nav" id="desktopNav">';
-            echo '<li><a href="' . esc_url(home_url('/')) . '">صفحه اصلی</a></li>';
-            echo '<li class="menu-item-has-children"><a href="#water-sports">تفریحات آبی ▾</a>';
+            echo '<li class="current-menu-item"><a href="' . esc_url(home_url('/')) . '">صفحه اصلی</a></li>';
+            echo '<li class="menu-item-has-children"><a href="#water-sports">تفریحات آبی</a>';
             echo '<ul class="sub-menu">';
             echo '<li><a href="#parasail">پاراسل</a></li>';
             echo '<li><a href="#diving">غواصی VIP</a></li>';
@@ -60,9 +60,7 @@ $account_link = class_exists('WooCommerce') ? get_permalink(get_option('woocomme
         ?>
     </div>
 
-    <div class="header__center">
-        <!-- Banner Center Gap for Floating Logo on Home -->
-    </div>
+    <div class="header__center"></div>
 
     <div class="header__right">
         <a href="#" class="header__icon" id="cartIcon" aria-label="سبد خرید">
@@ -112,7 +110,7 @@ $account_link = class_exists('WooCommerce') ? get_permalink(get_option('woocomme
 <div class="cart-panel-overlay" id="cartPanelOverlay"></div>
 <div class="cart-panel" id="cartPanel">
     <div class="cart-panel__header">
-        <h3>سبد خرید شما</h3>
+        <h3>سبد خرید</h3>
         <button class="cart-panel__close" id="closeCartPanel" aria-label="بستن سبد خرید">✕</button>
     </div>
     <div class="custom-cart-widget-area">
@@ -120,7 +118,7 @@ $account_link = class_exists('WooCommerce') ? get_permalink(get_option('woocomme
         if (class_exists('WooCommerce')) {
             the_widget('WC_Widget_Cart', 'title=');
         } else {
-            echo '<div style="padding:20px;text-align:center;color:#5a6f80;"><p>افزونه ووکامرس نصب یا فعال نیست.</p></div>';
+            echo '<p style="padding:15px;color:#5a6f80;">افزونه ووکامرس فعال نیست.</p>';
         }
         ?>
     </div>
@@ -140,7 +138,7 @@ $account_link = class_exists('WooCommerce') ? get_permalink(get_option('woocomme
     <!-- Main Hero Banner Content -->
     <div class="banner h-[360px] flex flex-col items-center justify-center relative px-6 text-center text-white" id="banner">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-[#18D6D8] text-2xl sm:text-3xl border border-white/20 shadow-inner">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-[#00b4d8] text-2xl sm:text-3xl border border-white/20 shadow-inner">
                 <i class="fa-solid fa-umbrella-beach"></i>
             </div>
             <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight drop-shadow-md"><?php echo esc_html($hero_title); ?></h1>
@@ -157,7 +155,7 @@ $account_link = class_exists('WooCommerce') ? get_permalink(get_option('woocomme
         </svg>
     </div>
 
-    <!-- 6. Categories Grid Box (2 Columns with exact Formula CSS) -->
+    <!-- 6. Categories Grid Box -->
     <div class="categories-wrapper max-w-[820px] mx-auto px-4 absolute -bottom-36 sm:-bottom-44 md:-bottom-52 left-0 right-0 z-20">
         <div class="categories-grid grid grid-cols-2 bg-white border border-[#e5e7eb] rounded-[28px] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
             <?php
