@@ -91,7 +91,81 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePositions();
     if (floatingLogo) updateLogo(0);
 
-    // 2. Banner Slider Engine
+    // 2. Mobile Menu & Accordion Engine
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+
+    function openMobileMenu() {
+        if (mobileMenu) mobileMenu.classList.add('active');
+        if (mobileMenuOverlay) mobileMenuOverlay.classList.add('active');
+        if (hamburgerBtn) hamburgerBtn.classList.add('active');
+    }
+
+    function closeMobileMenu() {
+        if (mobileMenu) mobileMenu.classList.remove('active');
+        if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('active');
+        if (hamburgerBtn) hamburgerBtn.classList.remove('active');
+    }
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openMobileMenu);
+    if (closeMobileMenuBtn) closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+    if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+    // Submenu Toggle for Mobile Nav
+    const mobileMenuItems = document.querySelectorAll('.mobile-nav .menu-item-has-children');
+    mobileMenuItems.forEach(item => {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'submenu-toggle';
+        toggleBtn.innerHTML = '▼';
+        toggleBtn.setAttribute('type', 'button');
+
+        const mainLink = item.querySelector(':scope > a');
+        if (mainLink) mainLink.after(toggleBtn);
+
+        const subMenu = item.querySelector(':scope > .sub-menu');
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleBtn.classList.toggle('active');
+            if (subMenu) subMenu.classList.toggle('open');
+        });
+    });
+
+    // 3. WooCommerce Slide-out Cart Drawer
+    const cartIcon = document.getElementById('cartIcon');
+    const cartPanel = document.getElementById('cartPanel');
+    const cartPanelOverlay = document.getElementById('cartPanelOverlay');
+    const closeCartPanelBtn = document.getElementById('closeCartPanel');
+
+    function openCartPanel() {
+        if (cartPanel) cartPanel.classList.add('active');
+        if (cartPanelOverlay) cartPanelOverlay.classList.add('active');
+    }
+
+    function closeCartPanel() {
+        if (cartPanel) cartPanel.classList.remove('active');
+        if (cartPanelOverlay) cartPanelOverlay.classList.remove('active');
+    }
+
+    if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            openCartPanel();
+        });
+    }
+    if (closeCartPanelBtn) closeCartPanelBtn.addEventListener('click', closeCartPanel);
+    if (cartPanelOverlay) cartPanelOverlay.addEventListener('click', closeCartPanel);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMobileMenu();
+            closeCartPanel();
+        }
+    });
+
+    // 4. Banner Slider Engine
     const sliderContainer = document.getElementById('heroSlider');
     const sliderTrack = document.getElementById('sliderTrack');
     const slides = sliderTrack ? sliderTrack.children : [];
@@ -152,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resetAuto();
     }
 
-    // 3. Photo Gallery & Lightbox Engine
+    // 5. Photo Gallery & Lightbox Engine
     const galleryImages = document.querySelectorAll('.gallery-item img');
     galleryImages.forEach(img => {
         const item = img.closest('.gallery-item');
@@ -215,14 +289,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lightboxNext) lightboxNext.addEventListener('click', () => showLightboxImg(galleryIndex + 1));
     }
 
-    // 4. Open-Meteo Weather API Fetcher
+    // 6. Open-Meteo Weather API Fetcher
     const tempEl = document.getElementById('wt-temp');
     const windEl = document.getElementById('wt-wind');
-    const humEl  = document.getElementById('wt-humidity');
 
     if (tempEl) {
-        // Kish Island Coordinates: 26.5578 N, 53.9747 E
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=26.5578&longitude=53.9747&current_weather=true&hourly=relativehumidity_2m')
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=26.5578&longitude=53.9747&current_weather=true')
             .then(res => res.json())
             .then(data => {
                 if (data && data.current_weather) {
@@ -230,8 +302,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (windEl) windEl.textContent = Math.round(data.current_weather.windspeed) + ' km/h';
                 }
             })
-            .catch(() => {
-                // Keep default PHP fallback
-            });
+            .catch(() => {});
     }
 });
