@@ -3,7 +3,7 @@ Theme Name: Kish Harmony Child
 Theme URI: https://kish-harmony.ir
 Author: Kish Harmony Team
 Author URI: https://kish-harmony.ir
-Description: قالب بچه (Child Theme) فوق‌پیشرفته کیش هارمونی بر پایه قالب Twenty Twenty-Five بیست و بیست و پنج وردپرس
+Description: قالب بچه (Child Theme) کامل و فوق‌پیشرفته کیش هارمونی بر پایه قالب Twenty Twenty-Five بیست و بیست و پنج وردپرس
 Version: 1.0.0
 Template: twentytwentyfive
 License: GNU General Public License v2 or later
@@ -13,22 +13,29 @@ Tags: tourism, booking, kish, persian, rtl, responsive-layout, custom-menu, feat
 */
 
 /* ==========================================================================
-   ۱. متغیرهای سراسری و ریست کامل (CSS Tokens & Base Reset)
+   ۱. متغیرهای سراسری و ریست جامع (Global CSS Tokens & Master Reset)
    ========================================================================== */
 :root {
-    --kh-primary: #0B63D8;      /* 60%: آبی پررنگ */
-    --kh-secondary: #18D6D8;    /* 30%: فیروزه‌ای */
-    --kh-light-blue: #AEEBFF;   /* آبی روشن */
-    --kh-accent: #FF8A00;       /* 10%: نارنجی تأکیدی */
-    --kh-purple: #6C3FBF;       /* بنفش VIP */
+    --kh-primary: #0B63D8;
+    --kh-primary-dark: #084bb3;
+    --kh-secondary: #18D6D8;
+    --kh-light-blue: #AEEBFF;
+    --kh-accent: #FF8A00;
+    --kh-accent-dark: #e07800;
+    --kh-purple: #6C3FBF;
     --kh-text-dark: #0a2540;
     --kh-text-mid: #5a6f80;
     --kh-bg: #f8fafc;
     --kh-white: #ffffff;
+    --kh-radius-sm: 14px;
+    --kh-radius-md: 20px;
+    --kh-radius-lg: 28px;
     --kh-shadow-sm: 0 2px 8px rgba(11, 99, 216, 0.06);
     --kh-shadow-md: 0 6px 22px rgba(11, 99, 216, 0.10);
     --kh-shadow-lg: 0 14px 38px rgba(11, 99, 216, 0.16);
+    --kh-shadow-deep: 0 12px 30px rgba(0, 0, 0, 0.25);
     --kh-transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --kh-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after {
@@ -44,8 +51,8 @@ html, body {
     padding: 0;
     background-color: var(--kh-bg);
     color: var(--kh-text-dark);
-    font-family: 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.6;
+    font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.7;
     overflow-x: hidden;
 }
 
@@ -66,7 +73,7 @@ html, body {
 }
 
 /* ==========================================================================
-   ۲. استایل کامل هدر شیشه‌ای و لوگوی شناور (Home Header & Floating Logo)
+   ۲. بخش اول و دوم: هدر شیشه‌ای، لوگوی شناور و هدر صفحات داخلی (Headers)
    ========================================================================== */
 .header {
     position: fixed;
@@ -106,6 +113,32 @@ html, body {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: #1e1e2f;
+    white-space: nowrap;
+}
+.header-logo .logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+}
+.header-logo .logo-text {
+    font-weight: 800;
+    font-size: 1.3rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .floating-logo {
@@ -213,14 +246,14 @@ html, body {
 }
 
 /* ==========================================================================
-   ۳. اسلایدر بنر اصلی (Banner Slider Rules)
+   ۳. بخش سوم: اسلایدر بنر اصلی (Banner Slider Engine)
    ========================================================================== */
 .slider-container {
     max-width: 1400px;
     border-radius: 18px;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--kh-shadow-deep);
 }
 .slider {
     display: flex;
@@ -246,7 +279,7 @@ html, body {
 }
 
 /* ==========================================================================
-   ۴. دسته‌بندی تفریحات (Grid Soft Rules)
+   ۴. بخش چهارم: دسته‌بندی تفریحات (Grid Soft & Sea Categories)
    ========================================================================== */
 .grid-soft {
     display: grid;
@@ -308,7 +341,7 @@ html, body {
 }
 
 /* ==========================================================================
-   ۵. کارت‌های رنت خودرو (Car Rental Styling Rules)
+   ۵. بخش پنجم و هفتم: کارت محصول ویژه و رنت خودرو (Car Rentals & Special Offers)
    ========================================================================== */
 .car-card {
     background: var(--kh-white);
@@ -357,7 +390,7 @@ html, body {
 }
 
 /* ==========================================================================
-   ۶. گالری تصاویر و لایت‌باکس (Gallery & Lightbox Rules)
+   ۶. بخش ششم: گالری تصاویر و لایت‌باکس لمسی (Gallery & Lightbox)
    ========================================================================== */
 .gallery-grid {
     display: grid;
@@ -410,10 +443,59 @@ html, body {
 }
 
 /* ==========================================================================
-   ۷. شاه‌کار انیمیشن فوتر (Animated SVG Footer Rules)
+   ۷. بخش هشتم: بنر راهنمای سفر به کیش (Travel Guide Banner)
+   ========================================================================== */
+.travel-guide-section .banner-container {
+    background: linear-gradient(to left, #eef7ff, #ffffff);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   ۸. بخش نهم: ویجت آب و هوای کیش (Weather Widget)
+   ========================================================================== */
+.weather-widget {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+}
+
+/* ==========================================================================
+   ۹. بخش دهم: شاه‌کار فوتر دو موجه SVG (Animated SVG Dual Wave Footer)
    ========================================================================== */
 @keyframes floatUp {
     0% { transform: translateY(0) scale(1); opacity: 0.02; }
     50% { transform: translateY(-250px) scale(1.5); opacity: 0.05; }
     100% { transform: translateY(-550px) scale(2.2); opacity: 0; }
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        height: 62px;
+        padding: 0 1rem;
+    }
+    .header.scrolled {
+        border-radius: 35px;
+        top: 8px;
+        left: 2%;
+        width: 96%;
+        height: 52px;
+        padding: 0 1.5rem;
+    }
+    .slide {
+        height: 320px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header.scrolled {
+        border-radius: 28px;
+        top: 6px;
+    }
+    .slide {
+        height: 260px;
+    }
 }
