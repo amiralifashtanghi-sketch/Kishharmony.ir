@@ -1,0 +1,33 @@
+/*
+Theme Name: Kish Harmony
+Theme URI: https://kishharmony.ir
+Description: Kish Harmony Professional Child Theme based on Twenty Twenty-Five with built-in Visual Design Management System.
+Author: Kish Harmony Team
+Author URI: https://kishharmony.ir
+Template: twentytwentyfive
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: kish-harmony
+Domain Path: /languages
+Tags: block-theme, child-theme, e-commerce, responsive-layout, custom-colors, custom-menu, custom-logo
+*/
+
+/* Core CSS Logical Properties & Design Token Overrides */
+:root {
+  --kh-brand-blue: #0B63D8;
+  --kh-brand-cyan: #18D6D8;
+  --kh-brand-orange: #FF8A00;
+  --kh-brand-dark: #071E3D;
+  --kh-bg-slate: #f8fafc;
+  --kh-font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--kh-font-family) !important;
+  direction: rtl;
+  text-align: right;
+  background-color: var(--kh-bg-slate);
+  margin: 0;
+  padding: 0;
+}
