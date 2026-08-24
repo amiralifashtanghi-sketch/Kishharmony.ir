@@ -1,6 +1,7 @@
 <?php
 /**
- * Module 10: Animated SVG Footer
+ * Module 10: Animated SVG Dual-Wave Footer ("جزیره‌ی آبی / کیش هارمونی")
+ * Strictly implemented based on "فوتر.txt"
  */
 
 $brand_fa = kishharmony_get_option('brand_name_fa', 'کیش هارمونی');
@@ -12,7 +13,7 @@ $namads   = kishharmony_get_option('footer_namads', '<div style="color:#fff;font
 
 <div class="footer-wrapper bg-[#18D6D8] relative shrink-0">
 
-    <!-- Top Wave (White, Wave pointing up) -->
+    <!-- 1. Top Wave (White fill, Wave pointing UP) -->
     <div class="footer-top-wave w-full h-[70px] relative z-[2] -mb-[15px] pointer-events-none" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full block">
             <path class="wave-fill fill-white" transform="scale(1, -1) translate(0, -80)"
@@ -27,18 +28,18 @@ $namads   = kishharmony_get_option('footer_namads', '<div style="color:#fff;font
         </svg>
     </div>
 
-    <!-- Logo Strip -->
+    <!-- 2. Logo Strip (Centered Distinct Brand Strip) -->
     <div class="logo-strip pt-[10px] px-6 pb-[35px] flex justify-center items-center relative z-[1]">
         <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-link flex items-center gap-3 no-underline text-[#0B63D8]">
-            <span class="logo-icon text-5xl drop-shadow-[0_8px_14px_rgba(0,0,0,0.2)] transition-transform">🏝️</span>
-            <div class="logo-text flex flex-col gap-0.5">
-                <span class="logo-name text-3xl font-extrabold text-[#0B63D8] leading-tight"><?php echo esc_html($brand_fa); ?></span>
-                <span class="logo-tagline text-xs font-medium text-[#0B63D8]/80"><?php echo esc_html($brand_en); ?></span>
+            <span class="logo-icon text-[3.2rem] drop-shadow-[0_8px_14px_rgba(0,0,0,0.2)] transition-transform hover:scale-[1.08] hover:-rotate-4">🏝️</span>
+            <div class="logo-text flex flex-col gap-[2px]">
+                <span class="logo-name text-[2rem] font-[800] text-[#0B63D8] leading-[1.2]"><?php echo esc_html($brand_fa); ?></span>
+                <span class="logo-tagline text-[0.85rem] font-[500] text-[#0B63D8]/80"><?php echo esc_html($brand_en); ?></span>
             </div>
         </a>
     </div>
 
-    <!-- Middle Wave (Deep Blue) -->
+    <!-- 3. Middle Wave (Deep Blue fill #0B63D8) -->
     <div class="middle-wave w-full h-[70px] -mb-[5px] relative z-[2] pointer-events-none" aria-hidden="true">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full block">
             <path class="wave-deep fill-[#0B63D8]"
@@ -53,71 +54,99 @@ $namads   = kishharmony_get_option('footer_namads', '<div style="color:#fff;font
         </svg>
     </div>
 
-    <!-- Main Content -->
+    <!-- 4. Main Footer Content Body (#0B63D8) -->
     <div class="main-content bg-[#0B63D8] text-white relative isolate overflow-hidden pt-[10px]">
-        <div class="glow-line absolute top-0 left-1/2 -translate-x-1/2 w-[65%] h-[1px] z-[3] bg-gradient-to-r from-transparent via-white to-transparent opacity-40"></div>
 
-        <!-- Floating Particles -->
+        <!-- Glow Scanner Line -->
+        <div class="glow-line absolute top-0 left-1/2 -translate-x-1/2 w-[65%] h-[1px] z-[3] bg-gradient-to-r from-transparent via-[#18D6D8] to-transparent opacity-40"></div>
+
+        <!-- Floating Water Particles -->
         <div class="particles absolute inset-0 z-0 pointer-events-none">
-            <span class="particle p1 absolute rounded-full bg-[#18D6D8] opacity-5 w-[150px] h-[150px] -bottom-[70px] left-[8%] animate-[floatUp_13s_infinite_ease-in-out]"></span>
-            <span class="particle p2 absolute rounded-full bg-[#6C3FBF] opacity-5 w-[100px] h-[100px] -bottom-[50px] left-[32%] animate-[floatUp_13s_infinite_ease-in-out_3s]"></span>
-            <span class="particle p3 absolute rounded-full bg-[#AEEBFF] opacity-5 w-[170px] h-[170px] -bottom-[85px] right-[6%] animate-[floatUp_13s_infinite_ease-in-out_6s]"></span>
+            <span class="particle p1 absolute rounded-full bg-[#18D6D8] opacity-5 w-[150px] h-[150px] -bottom-[70px] left-[8%]"></span>
+            <span class="particle p2 absolute rounded-full bg-[#6C3FBF] opacity-5 w-[100px] h-[100px] -bottom-[50px] left-[32%]"></span>
+            <span class="particle p3 absolute rounded-full bg-[#AEEBFF] opacity-5 w-[170px] h-[170px] -bottom-[85px] right-[6%]"></span>
+            <span class="particle p4 absolute rounded-full bg-[#18D6D8] opacity-5 w-[80px] h-[80px] -bottom-[40px] right-[28%]"></span>
         </div>
 
-        <div class="footer-inner relative z-[1] max-w-[1100px] mx-auto pt-[25px] px-6 pb-[10px] grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="link-group grid grid-cols-2 gap-5">
+        <div class="footer-inner relative z-[1] max-w-[1100px] mx-auto pt-[25px] px-6 pb-[10px] grid grid-cols-1 md:grid-cols-2 gap-[30px]">
+
+            <!-- Link Group Sub-Grid (Always 2 Columns) -->
+            <div class="link-group grid grid-cols-2 gap-[20px]">
                 <div>
-                    <h4 class="col-title text-base font-bold text-white mb-3.5 relative inline-block">دسترسی سریع</h4>
-                    <ul class="footer-links list-none flex flex-col gap-2 text-xs text-white/70">
-                        <li><a href="#" class="hover:text-white transition-colors">درباره ما</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">خدمات ما</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">نمونه کارها</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">وبلاگ</a></li>
-                        <li><a href="#special-offers" class="text-[#FF8A00] font-semibold hover:underline">پیشنهاد ویژه ✨</a></li>
+                    <h4 class="col-title text-[1rem] font-[700] text-white mb-[14px] relative inline-block">دسترسی سریع</h4>
+                    <ul class="footer-links list-none flex flex-col gap-[9px] text-[0.85rem] text-white/65">
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">درباره ما</a></li>
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">خدمات ما</a></li>
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">نمونه کارها</a></li>
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">وبلاگ</a></li>
+                        <li><a href="#special-offers" class="footer-link highlight text-[#FF8A00] font-[600] hover:text-white hover:-translate-x-1 transition-all">پیشنهاد ویژه ✨</a></li>
                     </ul>
                 </div>
+
                 <div>
-                    <h4 class="col-title text-base font-bold text-white mb-3.5 relative inline-block">پشتیبانی</h4>
-                    <ul class="footer-links list-none flex flex-col gap-2 text-xs text-white/70">
-                        <li><a href="#" class="hover:text-white transition-colors">مرکز راهنمایی</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">سوالات متداول</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">قوانین و مقررات</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">حریم خصوصی</a></li>
-                        <li><span class="badge inline-flex items-center gap-1.5 bg-[#6C3FBF]/20 border border-[#6C3FBF]/60 text-purple-200 text-[10px] font-semibold px-2.5 py-1 rounded-full"><span class="badge-dot w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span> پشتیبانی VIP</span></li>
+                    <h4 class="col-title text-[1rem] font-[700] text-white mb-[14px] relative inline-block">پشتیبانی</h4>
+                    <ul class="footer-links list-none flex flex-col gap-[9px] text-[0.85rem] text-white/65">
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">مرکز راهنمایی</a></li>
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">سوالات متداول</a></li>
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">قوانین و مقررات</a></li>
+                        <li><a href="#" class="footer-link hover:text-white hover:-translate-x-1 transition-all">حریم خصوصی</a></li>
+                        <li>
+                            <span class="badge inline-flex items-center gap-[5px] mt-[4px] bg-[#6C3FBF]/20 border border-[#6C3FBF]/40 text-[#c9b8f0] text-[0.7rem] font-[600] px-[9px] py-[3px] rounded-[20px]">
+                                <span class="badge-dot w-[7px] h-[7px] rounded-full bg-[#b794f4]"></span> پشتیبانی VIP
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Contact & Namad -->
-            <div class="space-y-3 text-xs text-white/80">
-                <h4 class="col-title text-base font-bold text-white mb-3.5 relative inline-block">تماس با ما & نمادها</h4>
-                <div class="contact-item flex items-center gap-2.5">
-                    <span class="contact-icon w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#18D6D8]">📍</span>
+            <!-- Contact Column & CTA -->
+            <div class="space-y-[12px] text-[0.85rem] text-white/65">
+                <h4 class="col-title text-[1rem] font-[700] text-white mb-[14px] relative inline-block">تماس با ما</h4>
+
+                <div class="contact-item flex items-center gap-[10px]">
+                    <span class="contact-icon w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center text-[#18D6D8] shrink-0">📍</span>
                     <span><?php echo esc_html($address); ?></span>
                 </div>
-                <div class="contact-item flex items-center gap-2.5">
-                    <span class="contact-icon w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#18D6D8]">📞</span>
+
+                <div class="contact-item flex items-center gap-[10px]">
+                    <span class="contact-icon w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center text-[#18D6D8] shrink-0">📞</span>
                     <span><?php echo esc_html($phone); ?></span>
                 </div>
 
-                <div class="namads-container pt-3">
+                <div class="contact-item flex items-center gap-[10px]">
+                    <span class="contact-icon w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center text-[#18D6D8] shrink-0">✉️</span>
+                    <span>info@kishharmony.ir</span>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="#consultation" class="cta-button inline-flex items-center gap-[8px] bg-[#FF8A00] color-white text-white font-[700] text-[0.85rem] px-[20px] py-[10px] rounded-[28px] shadow-[0_6px_20px_rgba(255,138,0,0.3)] hover:bg-[#ff9d22] hover:-translate-y-[3px] hover:shadow-[0_12px_28px_rgba(255,138,0,0.45)] transition-all no-underline mt-[8px]">
+                    مشاوره رایگان ←
+                </a>
+
+                <!-- Trust Badges (eNamad) -->
+                <div class="namads-container pt-2">
                     <?php echo $namads; ?>
                 </div>
 
-                <div class="socials flex gap-2 pt-2">
-                    <a href="#" class="social-link w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#AEEBFF] hover:bg-[#18D6D8] hover:text-[#0B63D8] transition-all">📷</a>
-                    <a href="#" class="social-link w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#AEEBFF] hover:bg-[#18D6D8] hover:text-[#0B63D8] transition-all">🐦</a>
-                    <a href="#" class="social-link w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#AEEBFF] hover:bg-[#18D6D8] hover:text-[#0B63D8] transition-all">✈️</a>
+                <!-- Social Links -->
+                <div class="socials flex gap-[8px] mt-[16px]">
+                    <a href="#" class="social-link w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center text-[#AEEBFF] hover:bg-[#18D6D8] hover:text-[#0B63D8] hover:-translate-y-[3px] transition-all no-underline">📷</a>
+                    <a href="#" class="social-link w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center text-[#AEEBFF] hover:bg-[#18D6D8] hover:text-[#0B63D8] hover:-translate-y-[3px] transition-all no-underline">🐦</a>
+                    <a href="#" class="social-link w-[32px] h-[32px] rounded-full bg-white/10 flex items-center justify-center text-[#AEEBFF] hover:bg-[#18D6D8] hover:text-[#0B63D8] hover:-translate-y-[3px] transition-all no-underline">✈️</a>
                 </div>
             </div>
+
         </div>
 
-        <div class="footer-bottom border-t border-white/10 mt-8 py-4 px-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] text-white/60 bg-black/15 text-center">
+        <!-- 5. Copyright Bar -->
+        <div class="footer-bottom border-t border-white/10 mt-[35px] px-[24px] py-[16px] flex flex-col sm:flex-row justify-between items-center gap-[8px] text-[0.75rem] text-white/65 bg-black/15 text-center">
             <span>© ۱۴۰۴ <?php echo esc_html($brand_fa); ?>. تمامی حقوق محفوظ است.</span>
-            <ul class="bottom-links flex gap-4 list-none">
+            <ul class="bottom-links flex gap-[16px] list-none">
                 <li><a href="#" class="hover:text-[#18D6D8] transition-colors">نقشه سایت</a></li>
+                <li><a href="#" class="hover:text-[#18D6D8] transition-colors">کوکی‌ها</a></li>
                 <li><a href="#" class="hover:text-[#18D6D8] transition-colors">تنظیمات</a></li>
             </ul>
+            <span>ساخته شده با <span class="heart text-[#ff5e7a] inline-block animate-bounce">♥</span> در ایران</span>
         </div>
     </div>
 </div>
