@@ -45,7 +45,7 @@ function kishharmony_options_page_html() {
     $options = get_option('kishharmony_options', array());
     ?>
     <div class="wrap" dir="rtl" style="font-family: Tahoma, sans-serif;">
-        <h1 style="background: #0B63D8; color: #fff; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px;">
+        <h1 style="background: #1e3a8a; color: #fff; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px;">
             <span class="dashicons dashicons-palmtree" style="font-size: 30px; width: 30px; height: 30px;"></span>
             پنل جامع مدیریت قالب کیش هارمونی
         </h1>
@@ -67,7 +67,7 @@ function kishharmony_options_page_html() {
                 </tr>
                 <tr>
                     <th scope="row">رنگ پس‌زمینه بنر هیرو صفحه اصلی</th>
-                    <td><input type="color" name="kishharmony_options[hero_bg_color]" value="<?php echo esc_attr(kishharmony_get_option('hero_bg_color', '#0B63D8')); ?>"></td>
+                    <td><input type="color" name="kishharmony_options[hero_bg_color]" value="<?php echo esc_attr(kishharmony_get_option('hero_bg_color', '#1e3a8a')); ?>"></td>
                 </tr>
                 <tr>
                     <th scope="row">عنوان هیرو صفحه اصلی</th>
@@ -135,7 +135,7 @@ function kishharmony_options_page_html() {
             <table class="form-table">
                 <tr>
                     <th scope="row">عنوان بخش</th>
-                    <td><input type="text" name="kishharmony_options[sea_cats_title]" value="<?php echo esc_attr(kishharmony_get_option('sea_cats_title', 'دسته‌بندی تفریحات دریایی و ساحلی')); ?>" class="regular-text"></td>
+                    <td><input type="text" name="kishharmony_options[sea_cats_title]" value="<?php echo esc_attr(kishharmony_get_option('sea_cats_title', 'دسته‌بندی تفریحات کیش هارمونی')); ?>" class="regular-text"></td>
                 </tr>
                 <tr>
                     <th scope="row">توضیح بخش</th>
@@ -148,7 +148,7 @@ function kishharmony_options_page_html() {
             <table class="form-table">
                 <tr>
                     <th scope="row">عنوان بخش پیشنهادات ویژه</th>
-                    <td><input type="text" name="kishharmony_options[special_offers_title]" value="<?php echo esc_attr(kishharmony_get_option('special_offers_title', 'پیشنهادهای ویژه و بلیط‌های لحظه آخری کیش')); ?>" class="regular-text"></td>
+                    <td><input type="text" name="kishharmony_options[special_offers_title]" value="<?php echo esc_attr(kishharmony_get_option('special_offers_title', 'پیشنهادهای ویژه')); ?>" class="regular-text"></td>
                 </tr>
                 <tr>
                     <th scope="row">تعداد نمایش کارت‌ها</th>
@@ -300,10 +300,10 @@ function kishharmony_save_car_meta($post_id) {
 
     $is_car = isset($_POST['_is_car_rental']) ? '1' : '0';
     update_post_meta($post_id, '_is_car_rental', $is_car);
-    update_post_meta($post_id, '_car_gearbox', sanitize_text_field($_POST['_car_gearbox']));
-    update_post_meta($post_id, '_car_fuel', sanitize_text_field($_POST['_car_fuel']));
-    update_post_meta($post_id, '_car_insurance', sanitize_text_field($_POST['_car_insurance']));
-    update_post_meta($post_id, '_car_seats', sanitize_text_field($_POST['_car_seats']));
-    update_post_meta($post_id, '_car_badge', sanitize_text_field($_POST['_car_badge']));
+    if (isset($_POST['_car_gearbox'])) update_post_meta($post_id, '_car_gearbox', sanitize_text_field($_POST['_car_gearbox']));
+    if (isset($_POST['_car_fuel'])) update_post_meta($post_id, '_car_fuel', sanitize_text_field($_POST['_car_fuel']));
+    if (isset($_POST['_car_insurance'])) update_post_meta($post_id, '_car_insurance', sanitize_text_field($_POST['_car_insurance']));
+    if (isset($_POST['_car_seats'])) update_post_meta($post_id, '_car_seats', sanitize_text_field($_POST['_car_seats']));
+    if (isset($_POST['_car_badge'])) update_post_meta($post_id, '_car_badge', sanitize_text_field($_POST['_car_badge']));
 }
 add_action('save_post', 'kishharmony_save_car_meta');
