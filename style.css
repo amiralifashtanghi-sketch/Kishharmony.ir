@@ -1,0 +1,13 @@
+/*
+Theme Name: Kishharmony Child
+Theme URI: https://kishharmony.ir
+Description: Child theme for Twenty Twenty One — contains testable blocks: banners, rentals, home widgets.
+Author: amiralifashtanghi-sketch
+Template: twentytwentyone
+Version: 1.0.0
+Text Domain: kishharmony-child
+*/
+
+@import url("../twentytwentyone/style.css");
+
+/* Add small adjustments here */
